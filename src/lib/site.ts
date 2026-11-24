@@ -8,11 +8,24 @@ export const navLinks = [
 
 /**
  * Public address of the live site, used for sitemap.xml, robots.txt and
- * social previews. Set NEXT_PUBLIC_SITE_URL in the hosting environment.
+ * social share previews (og:image must be an absolute URL on the real domain).
+ *
+ * Order: NEXT_PUBLIC_SITE_URL if set (use this for a custom domain), otherwise
+ * the domain Vercel provides at build time, otherwise localhost for dev.
  */
-export const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.example.com"
-).replace(/\/$/, "");
+function resolveSiteUrl() {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return explicit;
+  // Vercel sets these without a protocol. The production URL is the stable
+  // domain; VERCEL_URL is the per-deployment one (used for previews).
+  const production = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (production) return `https://${production}`;
+  const deployment = process.env.VERCEL_URL;
+  if (deployment) return `https://${deployment}`;
+  return "http://localhost:3000";
+}
+
+export const siteUrl = resolveSiteUrl().replace(/\/$/, "");
 
 export const company = {
   name: "Telo Management Consulting",
