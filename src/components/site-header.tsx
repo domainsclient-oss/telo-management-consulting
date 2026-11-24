@@ -2,13 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import logoMark from "../../public/logo-mark.svg";
 import { ContactButton, ContactDialog } from "@/components/contact-dialog";
+import { HeaderFrame } from "@/components/header-frame";
 import { MobileNav } from "@/components/mobile-nav";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { company, navLinks } from "@/lib/site";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-md">
+    <HeaderFrame>
       <ScrollProgress />
       <div className="mx-auto flex h-[4.5rem] w-full max-w-7xl items-center justify-between gap-6 px-5 sm:px-8">
         <Link href="/#home" className="flex items-center gap-3">
@@ -40,6 +41,6 @@ export function SiteHeader() {
           <ContactDialog />
         </div>
       </div>
-    </header>
+    </HeaderFrame>
   );
 }

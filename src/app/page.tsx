@@ -48,11 +48,6 @@ const btnRed = cn(
   btn,
   "bg-brand-red-deep text-white hover:bg-brand-red",
 );
-const btnOutline = cn(
-  buttonVariants({ variant: "outline" }),
-  btn,
-  "border-primary-deep/40 bg-white text-primary-deep hover:bg-accent hover:text-primary-deep",
-);
 
 /** The three logo colours (plus navy), as full class names so Tailwind sees them. */
 type Tone = "cyan" | "red" | "gold" | "deep";
@@ -230,19 +225,22 @@ const peopleGroups: {
   },
 ];
 
-const software: { name: string; text: string; tone: Tone }[] = [
+const software: { name: string; full: string; text: string; tone: Tone }[] = [
   {
     name: "ERP",
+    full: "Enterprise Resource Planning",
     text: "Manage operations, resources and finance efficiently.",
     tone: "cyan",
   },
   {
     name: "CRM",
+    full: "Customer Relationship Management",
     text: "Build stronger relationships and drive revenue.",
     tone: "red",
   },
   {
     name: "LMS",
+    full: "Learning Management System",
     text: "Deliver, manage and track learning effortlessly.",
     tone: "gold",
   },
@@ -349,7 +347,6 @@ const reasons: {
 ];
 
 const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(company.mapQuery)}&output=embed`;
-const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(company.mapQuery)}`;
 
 export default function Home() {
   return (
@@ -364,31 +361,31 @@ export default function Home() {
 
       <main id="main" className="flex-1">
         {/* 1. Hero */}
-        <section id="home" className="scroll-mt-[4.75rem] bg-accent">
+        <section id="home" className="bg-accent pt-[4.75rem]">
           <div
             className={cn(
               container,
-              "grid items-center gap-12 py-14 lg:grid-cols-[1.08fr_0.92fr] lg:gap-16 lg:py-20",
+              "grid items-center gap-12 pt-10 pb-14 sm:pt-14 lg:grid-cols-[1.18fr_0.82fr] lg:gap-14 lg:py-16",
             )}
           >
             <div>
-              <Stars className="mb-6" />
-              <h1 className="font-heading text-[clamp(2.5rem,6vw,4.5rem)] leading-[1.04] font-semibold tracking-[-0.035em]">
+              <Stars className="mb-5" />
+              <h1 className="font-heading text-[clamp(2.125rem,5.2vw,4rem)] leading-[1.06] font-semibold tracking-[-0.035em]">
                 Accelerate Growth.
                 <br />
                 <span className="text-primary-deep">Extend Impact.</span>
               </h1>
-              <p className="mt-6 flex flex-wrap gap-x-2.5 font-heading text-xl font-semibold tracking-[-0.01em] sm:text-2xl">
+              <p className="rise mt-6 flex flex-wrap gap-x-1.5 font-heading text-base font-semibold tracking-[-0.01em] [animation-delay:80ms] sm:gap-x-2.5 sm:text-2xl">
                 <span className="text-primary-deep">Technology.</span>
                 <span className="text-brand-red-deep">People.</span>
                 <span className="text-brand-gold-deep">Creativity.</span>
                 <span>Purpose.</span>
               </p>
-              <p className="mt-5 max-w-[34rem] text-lg leading-relaxed text-foreground/80">
+              <p className="rise mt-4 max-w-[32rem] text-lg leading-relaxed text-foreground/80 [animation-delay:160ms]">
                 We help organizations grow, operate efficiently and create
                 lasting impact — globally.
               </p>
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="rise mt-8 flex flex-wrap gap-3 [animation-delay:240ms]">
                 <a href="#services" className={btnPrimary}>
                   Explore Our Solutions
                 </a>
@@ -398,75 +395,82 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative lg:pl-6">
+            <div className="relative mx-2 sm:mx-4 lg:mx-0 lg:ml-4">
               {/* Colour blocks behind the photo, in the logo's cyan and red. */}
               <div
                 aria-hidden="true"
-                className="absolute -top-4 -right-3 h-2/3 w-2/3 rounded-xl bg-primary sm:-right-4"
+                className="absolute -top-3 -right-3 h-3/5 w-3/5 rounded-2xl bg-primary sm:-top-4 sm:-right-4"
               />
               <div
                 aria-hidden="true"
-                className="absolute right-10 -bottom-4 size-24 rounded-xl bg-brand-red"
+                className="absolute -bottom-3 -left-3 h-2/5 w-2/5 rounded-2xl bg-brand-red sm:-bottom-4 sm:-left-4"
               />
               <div
                 aria-hidden="true"
-                className="absolute bottom-8 -left-2 z-20 flex w-28 flex-col gap-2 sm:-left-4 sm:w-36 lg:left-0"
+                className="absolute -right-4 bottom-5 z-20 flex w-16 flex-col gap-1.5 sm:-right-8 sm:bottom-10 sm:w-32 sm:gap-2"
               >
-                <span className="stripe h-3 bg-brand-gold" />
-                <span className="stripe h-3 bg-brand-red [animation-delay:120ms]" />
-                <span className="stripe h-3 bg-primary [animation-delay:240ms]" />
+                <span className="stripe h-2.5 bg-brand-gold [animation-delay:300ms]" />
+                <span className="stripe h-2.5 bg-brand-red [animation-delay:420ms]" />
+                <span className="stripe h-2.5 bg-primary [animation-delay:540ms]" />
               </div>
-              <div className="relative z-10 aspect-[4/3] overflow-hidden rounded-xl sm:aspect-[16/10] lg:aspect-[4/5]">
+              <div className="relative z-10 aspect-[4/3] overflow-hidden rounded-2xl shadow-[0_24px_48px_-24px_rgba(14,39,49,0.45)] sm:aspect-[16/10] lg:aspect-[6/7]">
                 <Image
                   src={heroImage}
                   alt="A consulting team in discussion around a table in a bright office"
                   fill
                   preload
                   placeholder="blur"
-                  sizes="(min-width: 1024px) 600px, 100vw"
-                  className="object-cover object-[60%_45%]"
+                  sizes="(min-width: 1024px) 520px, 100vw"
+                  className="object-cover object-[62%_55%]"
                 />
               </div>
             </div>
           </div>
 
           {/* Four fact cards that straddle the hero and the next section. */}
-          <div className="bg-[linear-gradient(to_bottom,transparent_50%,var(--background)_50%)] pt-4">
-            <div className={cn(container, "grid gap-4 sm:grid-cols-2 lg:grid-cols-4")}>
+          <div className="bg-[linear-gradient(to_bottom,transparent_50%,var(--background)_50%)]">
+            <div
+              className={cn(
+                container,
+                "grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4",
+              )}
+            >
               {heroFacts.map((fact, i) => (
                 <Reveal key={fact.title} delay={i * 80} className="h-full">
                   <div
                     className={cn(
-                      "relative h-full overflow-hidden rounded-xl border border-t-[5px] bg-white p-6 shadow-[0_18px_40px_-18px_rgba(6,127,163,0.45)] transition-transform duration-200 hover:-translate-y-1",
+                      "group relative h-full overflow-hidden rounded-2xl border border-t-4 bg-white p-5 shadow-[0_16px_36px_-20px_rgba(6,127,163,0.5)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_22px_44px_-18px_rgba(6,127,163,0.55)]",
                       tones[fact.tone].bar,
                     )}
                   >
-                    {/* Oversized ghost icon in the corner. */}
+                    {/* Oversized ghost icon, top right, clear of the tags. */}
                     <fact.icon
                       aria-hidden="true"
                       strokeWidth={1.25}
                       className={cn(
-                        "absolute -right-5 -bottom-6 size-28 opacity-10",
+                        "absolute -top-5 -right-5 size-24 opacity-[0.07] transition-transform duration-300 group-hover:scale-110",
                         tones[fact.tone].text,
                       )}
                     />
-                    <span
-                      className={cn(
-                        "flex size-14 items-center justify-center rounded-lg",
-                        tones[fact.tone].tile,
-                      )}
-                    >
-                      <fact.icon className="size-7" aria-hidden="true" />
-                    </span>
-                    <h2 className="mt-5 font-heading text-xl leading-snug font-semibold tracking-[-0.015em]">
-                      {fact.title}
-                    </h2>
-                    <p className="relative mt-3 flex flex-wrap gap-1.5">
+                    <div className="relative flex items-center gap-3.5">
+                      <span
+                        className={cn(
+                          "flex size-12 shrink-0 items-center justify-center rounded-xl",
+                          tones[fact.tone].tile,
+                        )}
+                      >
+                        <fact.icon className="size-6" aria-hidden="true" />
+                      </span>
+                      <h2 className="font-heading text-lg leading-tight font-semibold tracking-[-0.015em]">
+                        {fact.title}
+                      </h2>
+                    </div>
+                    <p className="relative mt-4 flex flex-wrap gap-1.5">
                       {fact.tags.map((tag) => (
                         <span
                           key={tag}
                           className={cn(
-                            "rounded-full px-3 py-1 text-sm font-medium",
+                            "rounded-full px-2.5 py-1 text-[0.8125rem] leading-tight font-medium",
                             tones[fact.tone].tint,
                             tones[fact.tone].text,
                           )}
@@ -720,7 +724,7 @@ export default function Home() {
           <div
             className={cn(
               container,
-              "grid items-center gap-12 lg:grid-cols-2 lg:gap-16",
+              "grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16",
             )}
           >
             <Reveal>
@@ -732,29 +736,36 @@ export default function Home() {
                 We develop and implement practical software solutions to help
                 organizations manage operations, people and growth efficiently.
               </p>
-              <dl className="mt-8 space-y-3">
+              <ul className="mt-8 space-y-3">
                 {software.map((item) => (
-                  <div
+                  <li
                     key={item.name}
                     className={cn(
-                      "flex items-center gap-5 rounded-xl p-3 pr-5",
+                      "flex items-center gap-4 rounded-2xl p-3 pr-5 transition-transform duration-200 hover:translate-x-1.5 sm:gap-5",
                       tones[item.tone].tint,
                     )}
                   >
-                    <dt
+                    <span
+                      aria-hidden="true"
                       className={cn(
-                        "flex h-14 w-20 shrink-0 items-center justify-center rounded-lg font-heading text-xl font-semibold tracking-[-0.02em]",
+                        "flex size-16 shrink-0 items-center justify-center rounded-xl font-heading text-xl font-semibold tracking-[-0.02em]",
                         tones[item.tone].tile,
                       )}
                     >
                       {item.name}
-                    </dt>
-                    <dd className="text-[0.975rem] leading-snug font-medium">
-                      {item.text}
-                    </dd>
-                  </div>
+                    </span>
+                    <div>
+                      <h3 className="font-heading text-lg leading-snug font-semibold tracking-[-0.01em]">
+                        <span className="sr-only">{item.name}: </span>
+                        {item.full}
+                      </h3>
+                      <p className="mt-0.5 text-[0.95rem] leading-snug text-foreground/75">
+                        {item.text}
+                      </p>
+                    </div>
+                  </li>
                 ))}
-              </dl>
+              </ul>
               <a
                 href="#contact"
                 className={cn(btnPrimary, "mt-9")}
@@ -765,19 +776,31 @@ export default function Home() {
             </Reveal>
 
             <Reveal delay={100}>
-              <div className="relative">
+              <div className="relative mx-2 sm:mx-4 lg:mx-0">
                 <div
                   aria-hidden="true"
-                  className="absolute -top-4 -right-3 h-1/2 w-1/2 rounded-xl bg-brand-red sm:-right-4"
+                  className="absolute -top-3 -right-3 h-3/5 w-3/5 rounded-2xl bg-brand-red sm:-top-4 sm:-right-4"
                 />
-                <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
+                <div
+                  aria-hidden="true"
+                  className="absolute -bottom-3 -left-3 h-2/5 w-2/5 rounded-2xl bg-primary sm:-bottom-4 sm:-left-4"
+                />
+                <div
+                  aria-hidden="true"
+                  className="absolute -left-4 top-8 z-20 flex w-16 flex-col gap-1.5 sm:-left-8 sm:top-10 sm:w-28 sm:gap-2"
+                >
+                  <span className="h-2.5 bg-brand-gold" />
+                  <span className="h-2.5 bg-brand-red" />
+                  <span className="h-2.5 bg-primary" />
+                </div>
+                <div className="relative z-10 aspect-[4/3] overflow-hidden rounded-2xl shadow-[0_24px_48px_-24px_rgba(14,39,49,0.45)] lg:aspect-[10/9]">
                   <Image
                     src={softwareImage}
                     alt="A laptop and monitor showing a business dashboard with tables and charts"
                     fill
                     placeholder="blur"
-                    sizes="(min-width: 1024px) 620px, 100vw"
-                    className="object-cover"
+                    sizes="(min-width: 1024px) 580px, 100vw"
+                    className="object-cover object-[60%_50%]"
                   />
                 </div>
               </div>
@@ -858,34 +881,38 @@ export default function Home() {
                 Trusted by organizations across industries.
               </h2>
             </Reveal>
-            <ul className="mt-12 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3">
+            <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:mt-12">
               {clients.map((client, i) => (
                 <li key={client.name}>
-                  <Reveal
-                    delay={(i % 3) * 80}
-                    className={cn(
-                      "group h-full overflow-hidden rounded-xl border",
-                      tones[client.tone].tint,
-                    )}
-                  >
-                    <div
+                  <Reveal delay={(i % 3) * 80} className="h-full">
+                    <figure
                       className={cn(
-                        "relative aspect-[4/3] overflow-hidden border-b-[5px]",
+                        "group relative h-full overflow-hidden rounded-2xl border-b-[5px] shadow-[0_18px_36px_-24px_rgba(14,39,49,0.5)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_24px_44px_-22px_rgba(14,39,49,0.55)]",
                         tones[client.tone].line,
                       )}
                     >
-                      <Image
-                        src={client.image}
-                        alt={client.alt}
-                        fill
-                        placeholder="blur"
-                        sizes="(min-width: 1280px) 400px, (min-width: 768px) 33vw, 50vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
-                    <p className="px-4 py-4 font-heading leading-snug font-semibold tracking-[-0.01em] sm:px-5 sm:text-lg">
-                      {client.name}
-                    </p>
+                      <div className="relative aspect-[4/3] sm:aspect-[3/2]">
+                        <Image
+                          src={client.image}
+                          alt={client.alt}
+                          fill
+                          placeholder="blur"
+                          sizes="(min-width: 1280px) 400px, (min-width: 768px) 33vw, 50vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                      {/* Name tag sits on the photo, bottom left. */}
+                      <figcaption className="absolute bottom-2.5 left-2.5 flex max-w-[calc(100%-1.25rem)] items-center gap-2 rounded-lg bg-white py-1.5 pr-3 pl-2 font-heading text-sm leading-tight font-semibold tracking-[-0.01em] text-foreground shadow-[0_6px_16px_-6px_rgba(14,39,49,0.45)] sm:bottom-4 sm:left-4 sm:gap-2.5 sm:py-2 sm:pr-4 sm:pl-2.5 sm:text-base">
+                        <span
+                          aria-hidden="true"
+                          className={cn(
+                            "size-3 shrink-0 rounded-[4px] sm:size-3.5",
+                            tones[client.tone].tile,
+                          )}
+                        />
+                        {client.name}
+                      </figcaption>
+                    </figure>
                   </Reveal>
                 </li>
               ))}
@@ -991,18 +1018,10 @@ export default function Home() {
                   ))}
                 </span>
               </address>
-              <a
-                href={mapLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(btnOutline, "mt-8")}
-              >
-                Open in Google Maps
-              </a>
             </Reveal>
 
             <Reveal delay={100}>
-              <div className="overflow-hidden rounded-xl border-4 border-primary bg-secondary">
+              <div className="overflow-hidden rounded-xl bg-secondary">
                 <iframe
                   src={mapSrc}
                   title="Map showing the Telo Management Consultant office in Old Washermenpet, Chennai"

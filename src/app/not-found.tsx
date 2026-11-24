@@ -16,7 +16,7 @@ export default function NotFound() {
   return (
     <>
       <SiteHeader />
-      <main className="flex flex-1 items-center bg-accent">
+      <main className="flex flex-1 items-center bg-accent pt-[4.75rem]">
         <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
           <p
             aria-hidden="true"

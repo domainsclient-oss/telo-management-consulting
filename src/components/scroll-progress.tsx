@@ -37,7 +37,7 @@ export function ScrollProgress() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="h-1 bg-accent">
+    <div aria-hidden="true" className="h-1">
       <div
         ref={barRef}
         className="flex h-full"
