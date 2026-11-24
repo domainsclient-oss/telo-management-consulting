@@ -1,26 +1,136 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Brand extras */
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-deep: var(--brand-red-deep);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-gold-deep: var(--brand-gold-deep);
+  --color-gold-tint: var(--gold-tint);
+  --color-red-tint: var(--red-tint);
+  --color-primary-deep: var(--primary-deep);
+  --color-deep: var(--deep);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* Telo palette: logo cyan + logo red on white, charcoal text */
+  --background: #ffffff;
+  --foreground: #1b2830;
+  --card: #ffffff;
+  --card-foreground: #1b2830;
+  --popover: #ffffff;
+  --popover-foreground: #1b2830;
+  --primary: #03b3e4;
+  --primary-foreground: #05212b; /* dark text on cyan keeps buttons readable */
+  --primary-deep: #067fa3; /* cyan dark enough for text on white */
+  --brand-red: #f52d28;
+  --brand-red-deep: #d3211c; /* red dark enough for white button text */
+  --brand-gold: #f0b323; /* the stars in the logo */
+  --brand-gold-deep: #8a6000;
+  --gold-tint: #fdf4d9;
+  --red-tint: #fdeae9;
+  --deep: #0e2731;
+  --secondary: #f2f6f8;
+  --secondary-foreground: #1b2830;
+  --muted: #f2f6f8;
+  --muted-foreground: #54646e;
+  --accent: #e6f7fc;
+  --accent-foreground: #1b2830;
+  --destructive: #d92520;
+  --border: #dde6ea;
+  --input: #dde6ea;
+  --ring: #03b3e4;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+  :focus-visible {
+    outline: 2px solid var(--primary-deep);
+    outline-offset: 3px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Scroll reveal: elements rise in once when they enter the viewport. */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero stripes (taken from the lines in the TMC letterforms) draw in on load. */
+@keyframes stripe-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.stripe {
+  transform-origin: left;
+  animation: stripe-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .stripe {
+    animation: none;
+  }
+}
+
