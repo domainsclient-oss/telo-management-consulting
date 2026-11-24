@@ -28,6 +28,7 @@ export const metadata: Metadata = {
       "Technology. People. Creativity. Purpose. One partner for digital growth, BPO and staffing, software solutions and merchandise.",
     type: "website",
   },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
