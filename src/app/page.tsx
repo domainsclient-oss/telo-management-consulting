@@ -30,9 +30,10 @@ import clientBusiness from "../../public/images/client-business.jpg";
 import clientNonprofit from "../../public/images/client-nonprofit.jpg";
 import clientGlobal from "../../public/images/client-global.jpg";
 import { BackToTop } from "@/components/back-to-top";
+import { ClientCarousel, type Client } from "@/components/client-carousel";
 import { Reveal } from "@/components/reveal";
 import { SiteFooter } from "@/components/site-footer";
-import { ServiceTabs, type ServiceGroup } from "@/components/service-tabs";
+import { ServicePanels, type ServiceGroup } from "@/components/service-panels";
 import { SiteHeader } from "@/components/site-header";
 import { buttonVariants } from "@/components/ui/button";
 import { company } from "@/lib/site";
@@ -41,18 +42,19 @@ import { cn } from "@/lib/utils";
 /* ── Shared layout and type styles ───────────────────────────────────────── */
 
 const container = "mx-auto w-full max-w-[84rem] px-6 sm:px-10";
-const section = "scroll-mt-20 py-24 lg:py-36";
+const section = "scroll-mt-20 py-20 lg:py-28";
 const h2 =
-  "font-heading text-[clamp(1.75rem,2.9vw,2.5rem)] leading-[1.12] font-semibold tracking-[-0.03em]";
+  "font-heading text-[clamp(1.75rem,2.9vw,2.5rem)] leading-[1.12] font-semibold tracking-[-0.022em]";
 const lead = "text-lg leading-relaxed text-muted-foreground lg:text-[1.1875rem]";
 const index =
   "font-heading text-sm font-semibold tracking-[0.04em] tabular-nums";
 const frame = "relative overflow-hidden rounded-sm bg-secondary";
+/* Soft navy-tinted shadow for raised photos and panels. */
+const shadow = "shadow-[0_28px_60px_-30px_rgba(11,34,57,0.35)]";
 const zoom =
   "object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]";
 
 const btn = "h-13 gap-3 px-7 text-[0.975rem] font-semibold";
-const btnPrimary = cn(buttonVariants(), btn, "hover:bg-primary-deep");
 const btnOutlineOnDark = cn(
   buttonVariants({ variant: "outline" }),
   btn,
@@ -221,22 +223,35 @@ const software: { name: string; full: string; text: string }[] = [
   },
 ];
 
-const merchandise: { name: string; text: string }[] = [
+/* `zoom` and `focus` crop a close-up of each product out of the flat-lay photo
+   (CSS background-size and background-position). */
+const merchandise: {
+  name: string;
+  text: string;
+  zoom: string;
+  focus: string;
+}[] = [
   {
     name: "T-Shirts",
     text: "Custom designs for teams, events and ministries.",
+    zoom: "300%",
+    focus: "26% 0%",
   },
   {
     name: "Accessories",
     text: "Caps, bags, bottles, lanyards and more.",
+    zoom: "260%",
+    focus: "63% 100%",
   },
   {
     name: "Souvenirs",
     text: "Meaningful gifts for conferences, events and special occasions.",
+    zoom: "300%",
+    focus: "100% 94%",
   },
 ];
 
-const clients: { image: StaticImageData; alt: string; name: string }[] = [
+const clients: Client[] = [
   {
     image: clientStartups,
     alt: "A startup team working together at a shared table",
@@ -313,137 +328,160 @@ export default function Home() {
       <SiteHeader />
 
       <main id="main" className="flex-1">
-        {/* 1. Hero */}
-        <section id="home" className="bg-secondary">
-          {/* Full-bleed photo with the headline and actions set over it. */}
-          <div className="relative flex min-h-[36rem] items-center overflow-hidden bg-primary text-white sm:min-h-[40rem] lg:min-h-[44rem]">
-            <Image
-              src={heroImage}
-              alt="A business team in a meeting around a table in a glass-walled office"
-              fill
-              preload
-              placeholder="blur"
-              sizes="100vw"
-              className="settle object-cover object-[30%_30%] lg:object-[50%_30%]"
-            />
-            {/* Navy scrims: heavy on the left under the text, and a band at the
-                top so the header stays readable. */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,34,57,0.95)_0%,rgba(11,34,57,0.82)_40%,rgba(11,34,57,0.3)_100%)] max-lg:bg-primary/70"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(11,34,57,0.7),transparent)]"
-            />
+        {/* 1. Hero: full-bleed photo, headline and actions over it, and the
+            four facts in a frosted strip along the bottom edge. */}
+        <section
+          id="home"
+          className="relative isolate flex min-h-[44rem] flex-col overflow-hidden bg-primary text-white lg:min-h-[50rem]"
+        >
+          <Image
+            src={heroImage}
+            alt="A business team in a meeting around a table in a glass-walled office"
+            fill
+            preload
+            placeholder="blur"
+            sizes="100vw"
+            className="drift -z-30 object-cover object-[30%_30%] lg:object-[50%_30%]"
+          />
+          {/* Scrims, back to front: navy that is heavy on the left under the
+              text; a darker band at the bottom under the facts strip and at
+              the top under the header; a soft cyan glow from the lower left. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-20 bg-[linear-gradient(90deg,rgba(11,34,57,0.96)_0%,rgba(11,34,57,0.84)_42%,rgba(11,34,57,0.28)_100%)] max-lg:bg-primary/75"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-20 bg-[linear-gradient(180deg,rgba(7,23,38,0.7)_0%,rgba(7,23,38,0)_22%,rgba(7,23,38,0)_55%,rgba(7,23,38,0.88)_100%)]"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-[radial-gradient(48%_60%_at_0%_100%,rgba(3,179,228,0.28),transparent_70%)]"
+          />
 
-            <div className={cn(container, "relative pt-28 pb-14 lg:pt-32 lg:pb-16")}>
-              <div className="max-w-3xl">
-                <p className="rise flex flex-wrap gap-x-2.5 gap-y-1 text-[0.8125rem] font-semibold tracking-[0.14em] text-brand-cyan uppercase">
-                  <span>Technology.</span>
-                  <span>People.</span>
-                  <span>Creativity.</span>
-                  <span>Purpose.</span>
-                </p>
-                <h1 className="rise mt-7 font-heading text-[clamp(2.125rem,4.6vw,4rem)] leading-[1.04] font-semibold tracking-[-0.035em] [animation-delay:80ms]">
-                  Accelerate Growth.
-                  <br />
-                  <span className="text-brand-cyan">Extend Impact.</span>
-                </h1>
-                <p className="rise mt-6 max-w-[34rem] text-lg leading-relaxed text-white/85 [animation-delay:160ms]">
-                  We help organizations grow, operate efficiently and create
-                  lasting impact — globally.
-                </p>
-                <div className="rise mt-10 flex flex-wrap gap-3 [animation-delay:240ms]">
-                  <a href="#services" className={btnOnDark}>
-                    Explore Our Solutions
-                    <ArrowRight className={btnArrow} aria-hidden="true" />
-                  </a>
-                  <a href="#contact" className={btnOutlineOnDark}>
-                    Contact Us
-                  </a>
-                </div>
+          <div className={cn(container, "flex flex-1 items-center pt-32 pb-14 lg:pt-36 lg:pb-16")}>
+            <div className="max-w-3xl">
+              <p className="rise flex flex-wrap gap-x-2 gap-y-1 text-[0.6875rem] font-semibold tracking-[0.1em] text-brand-cyan uppercase sm:inline-flex sm:gap-x-2.5 sm:rounded-full sm:border sm:border-white/20 sm:bg-white/[0.07] sm:px-5 sm:py-2.5 sm:text-[0.8125rem] sm:tracking-[0.14em] sm:backdrop-blur-md">
+                <span>Technology.</span>
+                <span>People.</span>
+                <span>Creativity.</span>
+                <span>Purpose.</span>
+              </p>
+              <h1 className="rise mt-7 font-heading text-[clamp(2.25rem,5vw,4.5rem)] leading-[1.03] font-semibold tracking-[-0.025em] [animation-delay:80ms] lg:mt-8">
+                Accelerate Growth.
+                <br />
+                <span className="text-brand-cyan">Extend Impact.</span>
+              </h1>
+              {/* Cyan rule ties the statement to the supporting line. */}
+              <p className="rise mt-7 max-w-[34rem] border-l-2 border-brand-cyan pl-5 text-lg leading-relaxed text-white/85 [animation-delay:160ms] lg:text-[1.1875rem]">
+                We help organizations grow, operate efficiently and create
+                lasting impact — globally.
+              </p>
+              <div className="rise mt-10 flex flex-wrap gap-3 [animation-delay:240ms]">
+                <a href="#services" className={btnOnDark}>
+                  Explore Our Solutions
+                  <ArrowRight className={btnArrow} aria-hidden="true" />
+                </a>
+                <a href="#contact" className={btnOutlineOnDark}>
+                  Contact Us
+                </a>
               </div>
             </div>
           </div>
 
-          {/* Four facts, set as a quiet ruled row under the hero. */}
-          <div className={cn(container, "py-16 lg:py-20")}>
-            <ul className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-              {heroFacts.map((fact, i) => (
-                <li key={fact.title}>
-                  <Reveal
-                    delay={i * 80}
-                    className="border-t border-foreground/15 pt-6"
-                  >
+          {/* Four facts in a frosted strip. The 1px inner highlight gives the
+              glass an edge. */}
+          <div className={cn(container, "rise pb-6 [animation-delay:340ms] sm:pb-8 lg:pb-10")}>
+            <ul className="grid grid-cols-2 overflow-hidden rounded-sm border border-white/15 bg-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-md lg:grid-cols-4">
+              {heroFacts.map((fact) => (
+                <li
+                  key={fact.title}
+                  className="flex flex-col gap-4 border-white/12 p-5 even:border-l sm:flex-row sm:items-start sm:p-6 lg:border-l lg:p-7 lg:first:border-l-0 max-lg:[&:nth-child(n+3)]:border-t"
+                >
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-sm bg-brand-cyan/15 text-brand-cyan ring-1 ring-brand-cyan/30">
                     <fact.icon
-                      className="size-6 text-primary-deep"
+                      className="size-5"
                       strokeWidth={1.5}
                       aria-hidden="true"
                     />
-                    <h2 className="mt-5 font-heading text-lg leading-tight font-semibold tracking-[-0.02em]">
+                  </span>
+                  <div>
+                    <h2 className="font-heading text-[1.0625rem] leading-tight font-semibold tracking-[-0.012em]">
                       {fact.title}
                     </h2>
-                    <p className="mt-2 text-[0.95rem] leading-relaxed text-muted-foreground">
-                      {fact.tags.join(" · ")}
+                    <p className="mt-1.5 text-[0.9rem] leading-relaxed text-white/70">
+                      {/* Non-breaking joins: a separator never starts a line
+                          and hyphenated words stay whole. */}
+                      {fact.tags.join(" · ").replaceAll("-", "‑")}
                     </p>
-                  </Reveal>
+                  </div>
                 </li>
               ))}
             </ul>
           </div>
         </section>
 
-        {/* 2. Our Solutions */}
+        {/* 2. Our Solutions: four photo tiles, text set over the image */}
         <section id="services" className={section}>
           <div className={container}>
-            <Reveal className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-10">
-              <div className="lg:col-span-7">
-                <Eyebrow>Our Solutions</Eyebrow>
-                <h2 className={cn(h2, "mt-6")}>
-                  One Partner. Multiple Ways to Grow.
-                </h2>
-              </div>
-              <p className={cn(lead, "lg:col-span-5")}>
+            <Reveal className="max-w-3xl">
+              <Eyebrow>Our Solutions</Eyebrow>
+              <h2 className={cn(h2, "mt-6")}>
+                One Partner. Multiple Ways to Grow.
+              </h2>
+              <p className={cn(lead, "mt-6")}>
                 From digital growth to people solutions, from software to
                 branded merchandise — we bring the right mix of technology,
                 talent and creativity to help you move forward.
               </p>
             </Reveal>
 
-            <div className="mt-16 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
+            {/* Every other tile sits lower on large screens, so the row reads
+                as a composition instead of four equal boxes. */}
+            <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4 lg:pb-12">
               {solutions.map((item, i) => (
-                <Reveal key={item.title} delay={i * 80} className="h-full">
-                  <a href={item.href} className="group flex h-full flex-col">
-                    <div className={cn(frame, "aspect-[4/3] lg:aspect-[5/6]")}>
-                      <Image
-                        src={item.image}
-                        alt={item.alt}
-                        fill
-                        placeholder="blur"
-                        sizes="(min-width: 1024px) 310px, (min-width: 640px) 50vw, 100vw"
-                        className={zoom}
-                      />
-                    </div>
-                    <div className="mt-6 flex items-start justify-between gap-4">
-                      <span className={cn(index, "pt-1 text-primary-deep")}>
-                        {two(i)}
+                <Reveal
+                  key={item.title}
+                  delay={i * 80}
+                  className={cn(i % 2 === 1 && "lg:translate-y-12")}
+                >
+                  <a
+                    href={item.href}
+                    className="group relative block aspect-[4/5] overflow-hidden rounded-sm bg-primary text-white sm:aspect-[3/4]"
+                  >
+                    <Image
+                      src={item.image}
+                      alt={item.alt}
+                      fill
+                      placeholder="blur"
+                      sizes="(min-width: 1024px) 310px, (min-width: 640px) 50vw, 100vw"
+                      className={zoom}
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,34,57,0.05)_25%,rgba(11,34,57,0.78)_62%,rgba(11,34,57,0.96)_100%)]"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 p-6 lg:p-7">
+                      <h3 className="font-heading text-[1.375rem] leading-tight font-semibold tracking-[-0.016em]">
+                        {item.title}
+                      </h3>
+                      <p className="mt-2.5 text-[0.95rem] leading-relaxed text-white/80">
+                        {item.text}
+                      </p>
+                      <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-cyan">
+                        View details
+                        <ArrowUpRight
+                          className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                          strokeWidth={2}
+                          aria-hidden="true"
+                        />
                       </span>
-                      <ArrowUpRight
-                        className="size-5 text-foreground/30 transition-[color,transform] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary-deep"
-                        strokeWidth={1.5}
-                        aria-hidden="true"
-                      />
                     </div>
-                    <h3 className="mt-3 font-heading text-xl leading-snug font-semibold tracking-[-0.025em]">
-                      {item.title}
-                    </h3>
-                    <p className="mt-2.5 text-[0.975rem] leading-relaxed text-muted-foreground">
-                      {item.text}
-                    </p>
-                    <span className="mt-auto pt-6 text-sm font-semibold">
-                      <span className="link-line pb-0.5">View details</span>
-                    </span>
+                    {/* Cyan rule that draws across the bottom on hover. */}
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-0 bottom-0 h-1 origin-left scale-x-0 bg-brand-cyan transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 motion-reduce:transition-none"
+                    />
                   </a>
                 </Reveal>
               ))}
@@ -456,15 +494,22 @@ export default function Home() {
           <div className={container}>
             <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
               <Reveal className="lg:col-span-6">
-                <div className={cn(frame, "aspect-[4/3] bg-border")}>
-                  <Image
-                    src={digitalImage}
-                    alt="A marketer reviewing campaign analytics on a monitor and a social feed on a phone"
-                    fill
-                    placeholder="blur"
-                    sizes="(min-width: 1024px) 640px, 100vw"
-                    className="object-cover"
+                {/* Offset cyan block behind the photo for depth. */}
+                <div className="relative lg:pr-6 lg:pb-6">
+                  <div
+                    aria-hidden="true"
+                    className="absolute right-0 bottom-0 hidden h-2/3 w-2/3 rounded-sm bg-brand-cyan/20 lg:block"
                   />
+                  <div className={cn(frame, "aspect-[4/3] bg-border", shadow)}>
+                    <Image
+                      src={digitalImage}
+                      alt="A marketer reviewing campaign analytics on a monitor and a social feed on a phone"
+                      fill
+                      placeholder="blur"
+                      sizes="(min-width: 1024px) 640px, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
                 </div>
               </Reveal>
 
@@ -478,15 +523,15 @@ export default function Home() {
                   organizations build their brand, reach the right audience and
                   achieve measurable growth.
                 </p>
-                <ul className="mt-10 border-b border-foreground/12">
+                <ul className="mt-9 grid gap-3 sm:grid-cols-2">
                   {digitalServices.map((service) => (
                     <li
                       key={service}
-                      className="flex items-center gap-4 border-t border-foreground/12 py-3.5 text-[0.975rem] leading-snug font-medium"
+                      className="flex items-start gap-3 rounded-sm bg-white px-4 py-4 text-[0.925rem] leading-snug font-medium ring-1 ring-foreground/8"
                     >
                       <Check
-                        className="size-4 shrink-0 text-primary-deep"
-                        strokeWidth={2}
+                        className="mt-0.5 size-4 shrink-0 text-primary-deep"
+                        strokeWidth={2.25}
                         aria-hidden="true"
                       />
                       {service}
@@ -496,23 +541,38 @@ export default function Home() {
               </Reveal>
             </div>
 
-            {/* A real sequence, so it is numbered. */}
-            <Reveal className="mt-20 lg:mt-28">
-              <ol className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {/* A real sequence, so it is numbered: one navy band, four linked
+                steps, the last one highlighted as the outcome. */}
+            <Reveal className="mt-16 lg:mt-24">
+              <ol className="grid grid-cols-2 gap-x-6 gap-y-10 rounded-sm bg-primary px-6 py-10 text-white sm:px-10 lg:grid-cols-4 lg:gap-x-0 lg:px-12 lg:py-12">
                 {digitalSteps.map((step, i) => {
                   const last = i === digitalSteps.length - 1;
                   return (
-                    <li
-                      key={step}
-                      className={cn(
-                        "border-t-2 pt-6",
-                        last ? "border-brand-cyan" : "border-foreground/15",
+                    <li key={step} className="relative">
+                      {/* Connector to the next step. */}
+                      {!last && (
+                        <span
+                          aria-hidden="true"
+                          className="absolute top-5 right-4 left-14 hidden h-px bg-white/20 lg:block"
+                        />
                       )}
-                    >
-                      <span className={cn(index, "text-primary-deep")}>
+                      <span
+                        className={cn(
+                          index,
+                          "flex size-10 items-center justify-center rounded-full",
+                          last
+                            ? "bg-brand-cyan text-primary"
+                            : "border border-white/30 text-white",
+                        )}
+                      >
                         {two(i)}
                       </span>
-                      <span className="mt-3 block font-heading text-xl font-semibold tracking-[-0.025em] lg:text-2xl">
+                      <span
+                        className={cn(
+                          "mt-5 block font-heading text-xl font-semibold tracking-[-0.016em] lg:text-2xl",
+                          last && "text-brand-cyan",
+                        )}
+                      >
                         {step}
                       </span>
                     </li>
@@ -523,7 +583,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 4. BPO, Staffing & Training: one service at a time, by tab */}
+        {/* 4. BPO, Staffing & Training: three photo panels, one open at a time */}
         <section id="bpo-staffing" className={section}>
           <div className={container}>
             <Reveal className="max-w-3xl">
@@ -534,202 +594,178 @@ export default function Home() {
             </Reveal>
 
             <Reveal delay={100} className="mt-12 lg:mt-16">
-              <ServiceTabs groups={peopleGroups} />
+              <ServicePanels groups={peopleGroups} />
             </Reveal>
           </div>
         </section>
 
-        {/* 5. Software Solutions */}
-        <section id="products" className={cn(section, "bg-secondary")}>
+        {/* 5. Software Solutions: the one navy content section */}
+        <section
+          id="products"
+          className={cn(
+            section,
+            "relative overflow-hidden bg-primary text-white",
+          )}
+        >
           <div
-            className={cn(
-              container,
-              "grid items-center gap-14 lg:grid-cols-12 lg:gap-10",
-            )}
-          >
-            <Reveal className="lg:col-span-6">
-              <Eyebrow>Software Solutions</Eyebrow>
-              <h2 className={cn(h2, "mt-6")}>
-                Technology that simplifies, connects and scales.
-              </h2>
-              <p className={cn(lead, "mt-6 max-w-xl")}>
-                We develop and implement practical software solutions to help
-                organizations manage operations, people and growth efficiently.
-              </p>
-              <ul className="mt-10 border-b border-foreground/12">
-                {software.map((item) => (
-                  <li
-                    key={item.name}
-                    className="group grid grid-cols-[4.5rem_1fr] items-baseline gap-5 border-t border-foreground/12 py-6 sm:grid-cols-[6.5rem_1fr] sm:gap-8"
+            aria-hidden="true"
+            className="absolute inset-0 bg-[radial-gradient(55%_70%_at_100%_0%,rgba(3,179,228,0.2),transparent_70%)]"
+          />
+          <div className={cn(container, "relative")}>
+            <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+              <Reveal className="lg:col-span-5">
+                <Eyebrow onDark>Software Solutions</Eyebrow>
+                <h2 className={cn(h2, "mt-6")}>
+                  Technology that simplifies, connects and scales.
+                </h2>
+                <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75 lg:text-[1.1875rem]">
+                  We develop and implement practical software solutions to help
+                  organizations manage operations, people and growth efficiently.
+                </p>
+                <a
+                  href="#contact"
+                  className={cn(btnOnDark, "mt-10")}
+                  aria-label="Learn more about software solutions"
+                >
+                  Learn More
+                  <ArrowRight className={btnArrow} aria-hidden="true" />
+                </a>
+              </Reveal>
+
+              <Reveal delay={100} className="lg:col-span-6 lg:col-start-7">
+                <div
+                  className={cn(
+                    frame,
+                    "aspect-[16/11] bg-white/5 ring-1 ring-white/15",
+                  )}
+                >
+                  <Image
+                    src={softwareImage}
+                    alt="A laptop and monitor showing a business dashboard with tables and charts"
+                    fill
+                    placeholder="blur"
+                    sizes="(min-width: 1024px) 640px, 100vw"
+                    className="object-cover object-[60%_50%]"
+                  />
+                </div>
+              </Reveal>
+            </div>
+
+            <ul className="mt-14 grid gap-5 md:grid-cols-3 lg:mt-20">
+              {software.map((item, i) => (
+                <li key={item.name}>
+                  <Reveal
+                    delay={i * 80}
+                    className="group h-full rounded-sm border border-white/12 bg-white/[0.05] p-7 transition-colors duration-300 hover:border-brand-cyan/60 hover:bg-white/[0.08] lg:p-9"
                   >
                     <span
                       aria-hidden="true"
-                      className="font-heading text-2xl leading-none font-semibold tracking-[-0.035em] text-foreground/25 transition-colors duration-300 group-hover:text-primary-deep sm:text-[1.875rem]"
+                      className="block font-heading text-[2.5rem] leading-none font-semibold tracking-[-0.025em] text-brand-cyan"
                     >
                       {item.name}
                     </span>
-                    <div>
-                      <h3 className="font-heading text-lg leading-snug font-semibold tracking-[-0.02em]">
-                        <span className="sr-only">{item.name}: </span>
-                        {item.full}
-                      </h3>
-                      <p className="mt-1 text-[0.975rem] leading-relaxed text-muted-foreground">
-                        {item.text}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#contact"
-                className={cn(btnPrimary, "mt-10")}
-                aria-label="Learn more about software solutions"
-              >
-                Learn More
-                <ArrowRight className={btnArrow} aria-hidden="true" />
-              </a>
-            </Reveal>
-
-            <Reveal delay={100} className="lg:col-span-5 lg:col-start-8">
-              <div className={cn(frame, "aspect-[4/3] lg:aspect-[5/6]")}>
-                <Image
-                  src={softwareImage}
-                  alt="A laptop and monitor showing a business dashboard with tables and charts"
-                  fill
-                  placeholder="blur"
-                  sizes="(min-width: 1024px) 540px, 100vw"
-                  className="object-cover object-[60%_50%]"
-                />
-              </div>
-            </Reveal>
+                    <h3 className="mt-6 font-heading text-lg leading-snug font-semibold tracking-[-0.012em]">
+                      <span className="sr-only">{item.name}: </span>
+                      {item.full}
+                    </h3>
+                    <p className="mt-2 text-[0.975rem] leading-relaxed text-white/70">
+                      {item.text}
+                    </p>
+                  </Reveal>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
-        {/* 6. Merchandise */}
+        {/* 6. Merchandise: heading left and intro right, then the full photo
+            next to one tile per product line. Each tile shows a close-up
+            taken from the same photo. */}
         <section id="merchandise" className={section}>
-          <div
-            className={cn(
-              container,
-              "grid items-center gap-14 lg:grid-cols-12 lg:gap-10",
-            )}
-          >
-            <Reveal className="lg:order-2 lg:col-span-5 lg:col-start-8">
-              <Eyebrow>Merchandise</Eyebrow>
-              <h2 className={cn(h2, "mt-6")}>
-                Branded products that make an impact.
-              </h2>
-              <p className={cn(lead, "mt-6")}>
+          <div className={container}>
+            {/* Same 7 + 5 columns as the photo and tiles below, so the intro
+                lines up with the tiles. */}
+            <Reveal className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-5">
+              <div className="lg:col-span-7">
+                <Eyebrow>Merchandise</Eyebrow>
+                <h2 className={cn(h2, "mt-6")}>
+                  <span className="block">Branded products</span>
+                  <span className="block">that make an impact.</span>
+                </h2>
+              </div>
+              <p className={cn(lead, "lg:col-span-5")}>
                 High-quality, customized merchandise for organizations, events,
                 ministries, conferences and corporate needs.
               </p>
-              <dl className="mt-10 border-b border-foreground/12">
-                {merchandise.map((item) => (
-                  <div
-                    key={item.name}
-                    className="grid gap-1 border-t border-foreground/12 py-5 sm:grid-cols-[9rem_1fr] sm:gap-6"
-                  >
-                    <dt className="font-heading text-lg font-semibold tracking-[-0.02em]">
-                      {item.name}
-                    </dt>
-                    <dd className="text-[0.975rem] leading-relaxed text-muted-foreground">
-                      {item.text}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-              <a
-                href="#contact"
-                className={cn(btnPrimary, "mt-10")}
-                aria-label="Learn more about merchandise"
-              >
-                Learn More
-                <ArrowRight className={btnArrow} aria-hidden="true" />
-              </a>
             </Reveal>
 
-            <Reveal delay={100} className="lg:order-1 lg:col-span-6">
-              <div className={cn(frame, "aspect-[3/2] bg-border")}>
-                <Image
-                  src={merchandiseImage}
-                  alt="T-shirts, a cap, a tote bag, a steel bottle, a lanyard and a gift box laid out flat"
-                  fill
-                  placeholder="blur"
-                  sizes="(min-width: 1024px) 640px, 100vw"
-                  className="object-cover"
-                />
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* 7. Our Clients */}
-        <section id="clients" className={cn(section, "bg-secondary")}>
-          <div className={container}>
-            <Reveal>
-              <Eyebrow>Our Clients</Eyebrow>
-              <h2 className={cn(h2, "mt-6 max-w-3xl")}>
-                Trusted by organizations across industries.
-              </h2>
-            </Reveal>
-          </div>
-
-          {/* Auto-scrolling carousel. The list is rendered twice so the loop is
-              seamless; the second copy is hidden from assistive tech. It pauses
-              on hover and focus, and becomes a plain swipeable row for people
-              who prefer reduced motion (see .marquee in globals.css). */}
-          <Reveal className="marquee mt-14 lg:mt-20">
-            <div className="marquee-track">
-              {[0, 1].map((copy) => (
-                <ul
-                  key={copy}
-                  aria-hidden={copy === 1 ? true : undefined}
+            <div className="mt-12 grid gap-5 lg:mt-16 lg:grid-cols-12">
+              <Reveal className="lg:col-span-7">
+                <div
                   className={cn(
-                    "flex shrink-0 gap-5 pr-5 sm:gap-6 sm:pr-6",
-                    copy === 1 && "marquee-copy",
+                    frame,
+                    "group aspect-[3/2] bg-border lg:aspect-auto lg:h-full lg:min-h-[32rem]",
                   )}
                 >
-                  {clients.map((client, i) => (
-                    <li
-                      key={client.name}
-                      className="w-[16.5rem] shrink-0 sm:w-[22rem] lg:w-[26rem]"
+                  <Image
+                    src={merchandiseImage}
+                    alt="T-shirts, a cap, a tote bag, a steel bottle, a lanyard and a gift box laid out flat"
+                    fill
+                    placeholder="blur"
+                    sizes="(min-width: 1024px) 760px, 100vw"
+                    className={zoom}
+                  />
+                </div>
+              </Reveal>
+
+              <ul className="flex flex-col gap-5 lg:col-span-5">
+                {merchandise.map((item, i) => (
+                  <li key={item.name} className="flex-1">
+                    <Reveal
+                      delay={100 + i * 80}
+                      className="group flex h-full items-center gap-5 rounded-sm bg-secondary p-4 transition-colors duration-300 hover:bg-primary hover:text-white sm:gap-7 sm:p-5"
                     >
-                      <figure className="group">
-                        <div className={cn(frame, "aspect-[4/3]")}>
-                          <Image
-                            src={client.image}
-                            alt={copy === 0 ? client.alt : ""}
-                            fill
-                            placeholder="blur"
-                            sizes="(min-width: 1024px) 416px, (min-width: 640px) 352px, 264px"
-                            className={zoom}
-                          />
-                        </div>
-                        <figcaption className="mt-4 flex items-baseline justify-between gap-3 border-t border-foreground/15 pt-4">
-                          <span className="font-heading text-base leading-snug font-semibold tracking-[-0.02em] sm:text-xl">
-                            {client.name}
-                          </span>
-                          <span
-                            aria-hidden="true"
-                            className={cn(index, "text-foreground/35")}
-                          >
-                            {two(i)}
-                          </span>
-                        </figcaption>
-                      </figure>
-                    </li>
-                  ))}
-                </ul>
-              ))}
+                      {/* Close-up of this product, cropped from the main photo. */}
+                      <span
+                        aria-hidden="true"
+                        className="block size-24 shrink-0 rounded-sm bg-border bg-no-repeat ring-1 ring-foreground/8 sm:size-32"
+                        style={{
+                          backgroundImage: `url(${merchandiseImage.src})`,
+                          backgroundSize: item.zoom,
+                          backgroundPosition: item.focus,
+                        }}
+                      />
+                      <div>
+                        <h3 className="font-heading text-xl font-semibold tracking-[-0.016em] sm:text-[1.375rem]">
+                          {item.name}
+                        </h3>
+                        <p className="mt-1.5 text-[0.975rem] leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-white/75">
+                          {item.text}
+                        </p>
+                      </div>
+                    </Reveal>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </Reveal>
+          </div>
         </section>
 
-        {/* 8. Why Telo */}
+        {/* 7. Our Clients: drifting row of cards with previous / next arrows
+            (see ClientCarousel) */}
+        <section id="clients" className={cn(section, "bg-secondary")}>
+          <ClientCarousel clients={clients}>
+            <Eyebrow>Our Clients</Eyebrow>
+            <h2 className={cn(h2, "mt-6 max-w-3xl")}>
+              Trusted by organizations across industries.
+            </h2>
+          </ClientCarousel>
+        </section>
+
+        {/* 8. Why Telo: five reasons as tiles, the longest one set in navy */}
         <section id="why" className={section}>
-          <div
-            className={cn(container, "grid gap-14 lg:grid-cols-12 lg:gap-10")}
-          >
-            <Reveal className="lg:sticky lg:top-32 lg:col-span-5 lg:self-start">
+          <div className={container}>
+            <Reveal className="max-w-3xl">
               <Eyebrow>Why Telo Management Consulting</Eyebrow>
               <h2 className={cn(h2, "mt-6")}>
                 Global capability.
@@ -738,29 +774,62 @@ export default function Home() {
               </h2>
             </Reveal>
 
-            <ul className="border-b border-foreground/12 lg:col-span-6 lg:col-start-7">
-              {reasons.map((reason, i) => (
-                <li key={reason.title}>
-                  <Reveal
-                    delay={i * 60}
-                    className="grid grid-cols-[auto_1fr] gap-x-6 border-t border-foreground/12 py-7 sm:gap-x-8 sm:py-8"
+            <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:grid-cols-6">
+              {reasons.map((reason, i) => {
+                const feature = reason.title === "Global Delivery Model";
+                return (
+                  <li
+                    key={reason.title}
+                    className={cn(
+                      feature
+                        ? "sm:col-span-2 lg:col-span-4"
+                        : "lg:col-span-2",
+                    )}
                   >
-                    <reason.icon
-                      className="mt-0.5 size-7 text-primary-deep"
-                      strokeWidth={1.25}
-                      aria-hidden="true"
-                    />
-                    <div>
-                      <h3 className="font-heading text-xl font-semibold tracking-[-0.025em] sm:text-[1.375rem]">
+                    <Reveal
+                      delay={i * 60}
+                      className={cn(
+                        "flex h-full flex-col rounded-sm p-8 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 motion-reduce:transform-none lg:p-10",
+                        feature
+                          ? "relative overflow-hidden bg-primary text-white"
+                          : "bg-secondary",
+                      )}
+                    >
+                      {feature && (
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-0 bg-[radial-gradient(60%_90%_at_100%_0%,rgba(3,179,228,0.22),transparent_70%)]"
+                        />
+                      )}
+                      <span
+                        className={cn(
+                          "relative flex size-12 items-center justify-center rounded-sm",
+                          feature
+                            ? "bg-brand-cyan text-primary"
+                            : "bg-white text-primary-deep ring-1 ring-foreground/8",
+                        )}
+                      >
+                        <reason.icon
+                          className="size-6"
+                          strokeWidth={1.5}
+                          aria-hidden="true"
+                        />
+                      </span>
+                      <h3 className="relative mt-8 font-heading text-xl font-semibold tracking-[-0.016em] sm:text-[1.375rem] lg:mt-12">
                         {reason.title}
                       </h3>
-                      <p className="mt-1.5 max-w-xl text-muted-foreground">
+                      <p
+                        className={cn(
+                          "relative mt-2 max-w-xl",
+                          feature ? "text-white/75" : "text-muted-foreground",
+                        )}
+                      >
                         {reason.text}
                       </p>
-                    </div>
-                  </Reveal>
-                </li>
-              ))}
+                    </Reveal>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </section>
@@ -769,16 +838,16 @@ export default function Home() {
         <section className="relative overflow-hidden bg-primary py-20 text-white lg:py-28">
           {/* Background photo, pushed back under navy so the text stays readable. */}
           <Image
-            src={softwareImage}
+            src={heroImage}
             alt=""
             fill
             placeholder="blur"
             sizes="100vw"
-            className="object-cover object-[50%_45%]"
+            className="object-cover object-[50%_35%]"
           />
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,34,57,0.97)_0%,rgba(11,34,57,0.93)_50%,rgba(11,34,57,0.74)_100%)]"
+            className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,34,57,0.97)_0%,rgba(11,34,57,0.92)_50%,rgba(11,34,57,0.7)_100%)]"
           />
           <div
             aria-hidden="true"
@@ -791,7 +860,7 @@ export default function Home() {
                 <span aria-hidden="true" className="h-px w-8 bg-current" />
                 Let’s Create What’s Next
               </h2>
-              <p className="mt-7 font-heading text-[clamp(1.875rem,3.6vw,3rem)] leading-[1.1] font-semibold tracking-[-0.03em]">
+              <p className="mt-7 font-heading text-[clamp(1.875rem,3.6vw,3rem)] leading-[1.1] font-semibold tracking-[-0.022em]">
                 {/* One line where it fits; on narrow screens it breaks between
                     the two sentences, never inside one. */}
                 <span className="block">
@@ -809,19 +878,19 @@ export default function Home() {
         </section>
 
         {/* 10. Contact: full-width map (the address lives in the footer) */}
-        <section id="contact" className={section}>
+        <section id="contact" className="scroll-mt-20 py-14 lg:py-20">
           <div className={container}>
             {/* No visible heading; this one names the section for screen readers. */}
             <h2 className="sr-only">Contact</h2>
 
             <Reveal>
-              <div className={cn(frame, "border")}>
+              <div className={cn(frame, "border", shadow)}>
                 <iframe
                   src={mapSrc}
                   title="Map showing the Telo Management Consultant office in Old Washermenpet, Chennai"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="block h-[24rem] w-full lg:h-[32rem]"
+                  className="block h-[24rem] w-full grayscale-[0.85] transition-[filter] duration-700 hover:grayscale-0 focus:grayscale-0 motion-reduce:transition-none lg:h-[32rem]"
                 />
               </div>
             </Reveal>

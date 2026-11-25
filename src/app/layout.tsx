@@ -36,7 +36,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${body.variable} ${display.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
+      {/* Browser extensions add attributes to <body> before React loads;
+          ignore that one-level mismatch instead of warning about it. */}
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
         {/* Without JavaScript the scroll reveal can't run, so show everything. */}
         <noscript>
           <style>{`.reveal{opacity:1;transform:none}`}</style>

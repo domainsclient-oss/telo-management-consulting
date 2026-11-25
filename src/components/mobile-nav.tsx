@@ -52,7 +52,7 @@ export function MobileNav() {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="group flex items-center justify-between border-b py-5 font-heading text-2xl font-semibold tracking-[-0.025em] text-foreground"
+              className="group flex items-center justify-between border-b py-5 font-heading text-2xl font-semibold tracking-[-0.016em] text-foreground"
             >
               {link.label}
               <ArrowUpRight

@@ -22,7 +22,7 @@ export default function NotFound() {
             <span aria-hidden="true" className="h-px w-8 bg-current" />
             Error 404
           </p>
-          <h1 className="mt-7 font-heading text-[clamp(2.125rem,4.6vw,4rem)] leading-[1.04] font-semibold tracking-[-0.035em]">
+          <h1 className="mt-7 font-heading text-[clamp(2.125rem,4.6vw,4rem)] leading-[1.04] font-semibold tracking-[-0.025em]">
             Page not found
           </h1>
           <p className="mt-8 max-w-xl text-lg leading-relaxed text-white/80 lg:text-xl">

@@ -21,7 +21,7 @@ export function SiteHeader() {
             preload
           />
           {/* Hidden between md and lg, where the full menu leaves no room. */}
-          <span className="font-heading text-[0.95rem] leading-[1.15] font-semibold tracking-[-0.02em] text-white transition-colors duration-300 group-data-[scrolled=true]/header:text-foreground sm:text-lg md:max-lg:hidden">
+          <span className="font-heading text-[0.95rem] leading-[1.15] font-semibold tracking-[-0.012em] text-white transition-colors duration-300 group-data-[scrolled=true]/header:text-foreground sm:text-lg md:max-lg:hidden">
             {company.name}
           </span>
           <span className="sr-only">
