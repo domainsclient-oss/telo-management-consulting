@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 /**
- * The cyan / red / gold strip at the top of the header, revealed left to right
+ * A hairline in the logo cyan at the top of the header, revealed left to right
  * as the page is scrolled: empty at the top, full at the bottom.
  */
 export function ScrollProgress() {
@@ -20,7 +20,7 @@ export function ScrollProgress() {
       const max = doc.scrollHeight - doc.clientHeight;
       const progress = max > 0 ? Math.min(1, Math.max(0, doc.scrollTop / max)) : 0;
       // Writing the style directly avoids a React re-render on every scroll frame.
-      bar.style.clipPath = `inset(0 ${(1 - progress) * 100}% 0 0)`;
+      bar.style.transform = `scaleX(${progress})`;
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -37,16 +37,12 @@ export function ScrollProgress() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="h-1">
+    <div aria-hidden="true" className="h-0.5">
       <div
         ref={barRef}
-        className="flex h-full"
-        style={{ clipPath: "inset(0 100% 0 0)" }}
-      >
-        <span className="flex-[3] bg-primary" />
-        <span className="flex-[2] bg-brand-red" />
-        <span className="flex-1 bg-brand-gold" />
-      </div>
+        className="h-full origin-left bg-brand-cyan"
+        style={{ transform: "scaleX(0)" }}
+      />
     </div>
   );
 }

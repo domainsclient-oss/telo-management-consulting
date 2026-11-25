@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Hanken_Grotesk, Sora } from "next/font/google";
+import { Hanken_Grotesk, Manrope } from "next/font/google";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -9,10 +9,9 @@ const body = Hanken_Grotesk({
   display: "swap",
 });
 
-const display = Sora({
+const display = Manrope({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600"],
   display: "swap",
 });
 

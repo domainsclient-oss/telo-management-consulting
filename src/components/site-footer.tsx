@@ -1,8 +1,6 @@
 import Image from "next/image";
 import logoFull from "../../public/logo-full.svg";
-import { MapPin } from "lucide-react";
 import { company, navLinks } from "@/lib/site";
-import { cn } from "@/lib/utils";
 
 // TODO: replace "#" with the real profile URLs.
 const socials = [
@@ -36,115 +34,100 @@ const services = [
 ];
 
 const linkClass =
-  "inline-block text-[0.975rem] text-white/75 transition-[color,transform] duration-200 hover:translate-x-1 hover:text-primary";
+  "link-line py-0.5 text-[0.975rem] text-white/70 transition-colors duration-300 hover:text-white";
 
-/** Column heading with a short bar in one of the logo colours. */
-function ColumnHeading({ children, bar }: { children: string; bar: string }) {
+function ColumnHeading({ children }: { children: string }) {
   return (
-    <h2 className="font-heading text-lg font-semibold text-white">
+    <h2 className="text-[0.8125rem] font-semibold tracking-[0.14em] text-white/45 uppercase">
       {children}
-      <span aria-hidden="true" className={cn("mt-3 block h-1 w-10", bar)} />
     </h2>
   );
 }
 
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden bg-deep text-white">
-      <div aria-hidden="true" className="flex h-1.5">
-        <span className="flex-[3] bg-primary" />
-        <span className="flex-[2] bg-brand-red" />
-        <span className="flex-1 bg-brand-gold" />
-      </div>
-
-      {/* Faint stripes from the TMC letterforms, bottom right. */}
-      <div
-        aria-hidden="true"
-        className="absolute right-0 bottom-24 hidden w-72 flex-col gap-4 lg:flex"
-      >
-        <span className="h-5 bg-white/[0.04]" />
-        <span className="h-5 bg-white/[0.04]" />
-        <span className="h-5 bg-white/[0.04]" />
-      </div>
-
-      <div className="relative mx-auto grid w-full max-w-7xl gap-x-10 gap-y-12 px-5 py-16 sm:grid-cols-2 sm:px-8 lg:grid-cols-[1.3fr_0.8fr_0.5fr_1.6fr] lg:py-20">
-        <div>
-          <div className="inline-block rounded-xl bg-white p-4">
-            <Image
-              src={logoFull}
-              alt="Telo Management Consultant Private Limited"
-              className="h-auto w-48"
-              unoptimized
-            />
+    <footer className="bg-deeper text-white">
+      <div className="mx-auto w-full max-w-[84rem] px-6 sm:px-10">
+        {/* Four columns: brand, services, menu, office */}
+        <div className="grid gap-x-10 gap-y-12 py-16 sm:grid-cols-2 lg:grid-cols-12 lg:py-20">
+          <div className="sm:col-span-2 lg:col-span-4 lg:pr-8">
+            <div className="inline-block rounded-sm bg-white px-4 py-3">
+              <Image
+                src={logoFull}
+                alt="Telo Management Consultant Private Limited"
+                className="h-auto w-40"
+                unoptimized
+              />
+            </div>
+            <p className="mt-7 max-w-sm text-[0.975rem] leading-relaxed text-white/70">
+              We help organizations grow, operate efficiently and create
+              lasting impact — globally.
+            </p>
+            <p className="mt-5 flex flex-wrap gap-x-2.5 gap-y-1 font-heading text-sm font-semibold text-white/45">
+              <span>Technology.</span>
+              <span>People.</span>
+              <span>Creativity.</span>
+              <span>Purpose.</span>
+            </p>
           </div>
-          <p className="mt-6 flex flex-wrap gap-x-2 font-heading font-semibold">
-            <span className="text-primary">Technology.</span>
-            <span className="text-[#ff6b66]">People.</span>
-            <span className="text-brand-gold">Creativity.</span>
-            <span>Purpose.</span>
-          </p>
-          <p className="mt-3 max-w-xs text-[0.975rem] leading-relaxed text-white/70">
-            We help organizations grow, operate efficiently and create lasting
-            impact — globally.
-          </p>
-        </div>
 
-        <nav aria-label="Services">
-          <ColumnHeading bar="bg-primary">Services</ColumnHeading>
-          <ul className="mt-6 space-y-3">
-            {services.map((link) => (
-              <li key={link.href}>
-                <a href={link.href} className={linkClass}>
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+          <nav aria-label="Services" className="lg:col-span-3">
+            <ColumnHeading>Services</ColumnHeading>
+            <ul className="mt-6 space-y-3.5">
+              {services.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className={linkClass}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-        <nav aria-label="Footer">
-          <ColumnHeading bar="bg-brand-red">Menu</ColumnHeading>
-          <ul className="mt-6 space-y-3">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a href={link.href} className={linkClass}>
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+          <nav aria-label="Footer" className="lg:col-span-2">
+            <ColumnHeading>Menu</ColumnHeading>
+            <ul className="mt-6 space-y-3.5">
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className={linkClass}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-        <div>
-          <ColumnHeading bar="bg-brand-gold">Office</ColumnHeading>
-          <div className="mt-6 rounded-xl border border-white/15 bg-white/[0.06] p-5">
-            <address className="flex gap-4 text-[0.975rem] leading-relaxed text-white/75 not-italic">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-red text-white">
-                <MapPin className="size-5" aria-hidden="true" />
+          <div className="sm:col-span-2 lg:col-span-3">
+            <ColumnHeading>Office</ColumnHeading>
+            <address className="mt-6 text-[0.975rem] leading-relaxed text-white/70 not-italic">
+              <span className="block font-semibold text-white">
+                {company.legalName}
               </span>
-              <span>
-                <span className="block font-semibold text-white">
-                  {company.legalName}
+              {company.addressLines.map((line) => (
+                <span key={line} className="block">
+                  {line}
                 </span>
-                {company.addressLines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-              </span>
+              ))}
             </address>
           </div>
-          <ul className="mt-6 flex gap-2.5">
+        </div>
+
+        {/* Legal bar */}
+        <div className="flex flex-col-reverse items-start justify-between gap-6 border-t border-white/10 py-7 sm:flex-row sm:items-center">
+          <p className="text-sm text-white/50">
+            © 2026 {company.legalName}. All rights reserved.
+          </p>
+          <ul className="flex gap-2">
             {socials.map((social) => (
               <li key={social.label}>
                 <a
                   href={social.href}
                   aria-label={social.label}
-                  className="flex size-11 items-center justify-center rounded-full border border-white/20 text-white transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground"
+                  className="flex size-11 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors duration-300 hover:border-brand-cyan hover:bg-brand-cyan hover:text-primary"
                 >
                   <svg
                     viewBox="0 0 24 24"
-                    className="size-5"
+                    className="size-[1.125rem]"
                     fill="currentColor"
                     fillRule="evenodd"
                     aria-hidden="true"
@@ -156,12 +139,6 @@ export function SiteFooter() {
             ))}
           </ul>
         </div>
-      </div>
-
-      <div className="relative border-t border-white/15">
-        <p className="mx-auto w-full max-w-7xl px-5 py-6 text-center text-sm text-white/65 sm:px-8">
-          © 2026 {company.legalName}. All rights reserved.
-        </p>
       </div>
     </footer>
   );

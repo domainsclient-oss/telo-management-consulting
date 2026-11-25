@@ -1,20 +1,22 @@
 import Image, { type StaticImageData } from "next/image";
 import {
+  ArrowRight,
+  ArrowUpRight,
   BadgeCheck,
   Briefcase,
   Check,
   Globe,
   Layers,
-  MapPin,
-  Star,
   Target,
   Timer,
   Users,
   Wallet,
 } from "lucide-react";
-import heroImage from "../../public/images/hero.jpg";
+import heroImage from "../../public/images/hero-meeting.jpg";
 import digitalImage from "../../public/images/digital.jpg";
-import peopleImage from "../../public/images/people.jpg";
+import bpoImage from "../../public/images/bpo.jpg";
+import staffingImage from "../../public/images/staffing.jpg";
+import trainingImage from "../../public/images/training.jpg";
 import softwareImage from "../../public/images/software.jpg";
 import merchandiseImage from "../../public/images/merchandise.jpg";
 import cardDigital from "../../public/images/card-digital.jpg";
@@ -30,105 +32,88 @@ import clientGlobal from "../../public/images/client-global.jpg";
 import { BackToTop } from "@/components/back-to-top";
 import { Reveal } from "@/components/reveal";
 import { SiteFooter } from "@/components/site-footer";
+import { ServiceTabs, type ServiceGroup } from "@/components/service-tabs";
 import { SiteHeader } from "@/components/site-header";
 import { buttonVariants } from "@/components/ui/button";
 import { company } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-const container = "mx-auto w-full max-w-7xl px-5 sm:px-8";
-const section = "scroll-mt-[4.75rem] py-20 lg:py-28";
+/* ── Shared layout and type styles ───────────────────────────────────────── */
+
+const container = "mx-auto w-full max-w-[84rem] px-6 sm:px-10";
+const section = "scroll-mt-20 py-24 lg:py-36";
 const h2 =
-  "font-heading text-[clamp(1.875rem,3.6vw,2.875rem)] leading-[1.12] font-semibold tracking-[-0.025em] text-balance";
-const lead = "text-lg leading-relaxed text-muted-foreground";
-const kicker = "font-heading font-semibold text-primary-deep";
-const btn = "h-12 px-6 text-[0.975rem] font-semibold";
-const btnPrimary = cn(buttonVariants(), btn);
-const btnRed = cn(
+  "font-heading text-[clamp(1.75rem,2.9vw,2.5rem)] leading-[1.12] font-semibold tracking-[-0.03em]";
+const lead = "text-lg leading-relaxed text-muted-foreground lg:text-[1.1875rem]";
+const index =
+  "font-heading text-sm font-semibold tracking-[0.04em] tabular-nums";
+const frame = "relative overflow-hidden rounded-sm bg-secondary";
+const zoom =
+  "object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]";
+
+const btn = "h-13 gap-3 px-7 text-[0.975rem] font-semibold";
+const btnPrimary = cn(buttonVariants(), btn, "hover:bg-primary-deep");
+const btnOutlineOnDark = cn(
+  buttonVariants({ variant: "outline" }),
+  btn,
+  "border-white/40 bg-white/5 text-white backdrop-blur-sm hover:border-white hover:bg-white hover:text-primary",
+);
+const btnOnDark = cn(
   buttonVariants(),
   btn,
-  "bg-brand-red-deep text-white hover:bg-brand-red",
+  "bg-brand-cyan text-primary hover:bg-white",
 );
+const btnArrow =
+  "size-4 transition-transform duration-300 group-hover/button:translate-x-1";
 
-/** The three logo colours (plus navy), as full class names so Tailwind sees them. */
-type Tone = "cyan" | "red" | "gold" | "deep";
-const tones: Record<
-  Tone,
-  { tile: string; bar: string; text: string; tint: string; line: string }
-> = {
-  cyan: {
-    tile: "bg-primary text-primary-foreground",
-    bar: "border-t-primary",
-    text: "text-primary-deep",
-    tint: "bg-accent",
-    line: "border-primary",
-  },
-  red: {
-    tile: "bg-brand-red text-white",
-    bar: "border-t-brand-red",
-    text: "text-brand-red-deep",
-    tint: "bg-red-tint",
-    line: "border-brand-red",
-  },
-  gold: {
-    tile: "bg-brand-gold text-[#3a2900]",
-    bar: "border-t-brand-gold",
-    text: "text-brand-gold-deep",
-    tint: "bg-gold-tint",
-    line: "border-brand-gold",
-  },
-  deep: {
-    tile: "bg-deep text-white",
-    bar: "border-t-deep",
-    text: "text-deep",
-    tint: "bg-secondary",
-    line: "border-deep",
-  },
-};
-
-/** The five stars from the logo. */
-function Stars({ className }: { className?: string }) {
-  const sizes = ["size-4", "size-5", "size-7", "size-5", "size-4"];
+/** Small uppercase label that opens every section. */
+function Eyebrow({
+  children,
+  onDark = false,
+  className,
+}: {
+  children: React.ReactNode;
+  onDark?: boolean;
+  className?: string;
+}) {
   return (
-    <div
-      aria-hidden="true"
-      className={cn("flex items-end gap-1.5 text-brand-gold", className)}
+    <p
+      className={cn(
+        "flex items-center gap-3 text-[0.8125rem] font-semibold tracking-[0.14em] uppercase",
+        onDark ? "text-brand-cyan" : "text-primary-deep",
+        className,
+      )}
     >
-      {sizes.map((size, i) => (
-        <Star key={i} className={size} fill="currentColor" strokeWidth={0} />
-      ))}
-    </div>
+      <span aria-hidden="true" className="h-px w-8 bg-current" />
+      {children}
+    </p>
   );
 }
 
-const heroFacts: {
-  icon: typeof Globe;
-  title: string;
-  tags: string[];
-  tone: Tone;
-}[] = [
+const two = (n: number) => String(n + 1).padStart(2, "0");
+
+/* ── Content ─────────────────────────────────────────────────────────────── */
+
+const heroFacts: { icon: typeof Globe; title: string; tags: string[] }[] = [
   {
     icon: Globe,
     title: "Global Delivery",
     tags: ["Singapore", "India", "Worldwide"],
-    tone: "cyan",
   },
   {
     icon: Briefcase,
     title: "Diverse Industries",
     tags: ["Education", "Healthcare", "Businesses", "Non-Profits & more"],
-    tone: "red",
   },
   {
     icon: Users,
     title: "People First",
     tags: ["Creating opportunities"],
-    tone: "gold",
   },
   {
     icon: Target,
     title: "Larger Purpose",
     tags: ["Empowering communities"],
-    tone: "deep",
   },
 ];
 
@@ -138,7 +123,6 @@ const solutions: {
   title: string;
   text: string;
   href: string;
-  tone: Tone;
 }[] = [
   {
     image: cardDigital,
@@ -146,7 +130,6 @@ const solutions: {
     title: "Digital Growth",
     text: "Build your brand, reach the right audience and drive measurable results.",
     href: "#digital-growth",
-    tone: "cyan",
   },
   {
     image: cardPeople,
@@ -154,7 +137,6 @@ const solutions: {
     title: "BPO, Staffing and Training",
     text: "Reliable support and the right talent to keep you moving.",
     href: "#bpo-staffing",
-    tone: "red",
   },
   {
     image: cardSoftware,
@@ -162,7 +144,6 @@ const solutions: {
     title: "Software Solutions",
     text: "ERP, CRM, LMS and custom solutions to simplify and scale.",
     href: "#products",
-    tone: "deep",
   },
   {
     image: cardMerchandise,
@@ -170,7 +151,6 @@ const solutions: {
     title: "Merchandise",
     text: "Branded products that make an impact.",
     href: "#merchandise",
-    tone: "gold",
   },
 ];
 
@@ -185,16 +165,12 @@ const digitalServices = [
 
 const digitalSteps = ["Strategy", "Creativity", "Execution", "Real Results"];
 
-const peopleGroups: {
-  title: string;
-  subtitle: string;
-  items: string[];
-  tone: Tone;
-}[] = [
+const peopleGroups: ServiceGroup[] = [
   {
     title: "BPO",
+    image: bpoImage,
+    alt: "Two smiling customer support executives wearing headsets at their desks",
     subtitle: "Business Process Outsourcing",
-    tone: "cyan",
     items: [
       "Customer Support (Phone, Email, Chat)",
       "Back Office Processing & Data Management",
@@ -205,8 +181,9 @@ const peopleGroups: {
   },
   {
     title: "Staffing",
+    image: staffingImage,
+    alt: "A candidate shaking hands with a hiring manager across a desk",
     subtitle: "The right talent for your business",
-    tone: "red",
     items: [
       "Staff Augmentation (Short & Long Term)",
       "Recruitment & Talent Sourcing",
@@ -215,8 +192,9 @@ const peopleGroups: {
   },
   {
     title: "Training",
+    image: trainingImage,
+    alt: "A trainer at a flip chart leading a session for a group of professionals",
     subtitle: "Developing people and organizations for a stronger tomorrow.",
-    tone: "gold",
     items: [
       "Soft Skills Training & Development for SMEs, FMCG and Educational institutions",
       "Management Training & Development (Leadership Development)",
@@ -225,128 +203,103 @@ const peopleGroups: {
   },
 ];
 
-const software: { name: string; full: string; text: string; tone: Tone }[] = [
+const software: { name: string; full: string; text: string }[] = [
   {
     name: "ERP",
     full: "Enterprise Resource Planning",
     text: "Manage operations, resources and finance efficiently.",
-    tone: "cyan",
   },
   {
     name: "CRM",
     full: "Customer Relationship Management",
     text: "Build stronger relationships and drive revenue.",
-    tone: "red",
   },
   {
     name: "LMS",
     full: "Learning Management System",
     text: "Deliver, manage and track learning effortlessly.",
-    tone: "gold",
   },
 ];
 
-const merchandise: { name: string; text: string; tone: Tone }[] = [
+const merchandise: { name: string; text: string }[] = [
   {
     name: "T-Shirts",
     text: "Custom designs for teams, events and ministries.",
-    tone: "cyan",
   },
   {
     name: "Accessories",
     text: "Caps, bags, bottles, lanyards and more.",
-    tone: "red",
   },
   {
     name: "Souvenirs",
     text: "Meaningful gifts for conferences, events and special occasions.",
-    tone: "gold",
   },
 ];
 
-const clients: {
-  image: StaticImageData;
-  alt: string;
-  name: string;
-  tone: Tone;
-}[] = [
+const clients: { image: StaticImageData; alt: string; name: string }[] = [
   {
     image: clientStartups,
     alt: "A startup team working together at a shared table",
     name: "Start Ups",
-    tone: "red",
   },
   {
     image: clientEducation,
     alt: "A teacher helping students in a classroom",
     name: "Education",
-    tone: "cyan",
   },
   {
     image: clientHealthcare,
     alt: "A doctor and a nurse reviewing a tablet in a hospital corridor",
     name: "Healthcare",
-    tone: "red",
   },
   {
     image: clientBusiness,
     alt: "Executives shaking hands across a boardroom table",
     name: "Businesses & Corporates",
-    tone: "deep",
   },
   {
     image: clientNonprofit,
     alt: "Volunteers handing school supplies to children",
     name: "Non-Profits",
-    tone: "gold",
   },
   {
     image: clientGlobal,
     alt: "An international team on a video conference",
     name: "Global Clients",
-    tone: "cyan",
   },
 ];
 
-const reasons: {
-  icon: typeof Wallet;
-  title: string;
-  text: string;
-  tone: Tone;
-}[] = [
+const reasons: { icon: typeof Wallet; title: string; text: string }[] = [
   {
     icon: Wallet,
     title: "Cost Effective",
     text: "High quality at competitive pricing.",
-    tone: "gold",
   },
   {
     icon: BadgeCheck,
     title: "Quality Focus",
     text: "Proven processes and consistent delivery.",
-    tone: "cyan",
   },
   {
     icon: Timer,
     title: "Faster Turnaround",
     text: "Agile teams and streamlined workflows.",
-    tone: "red",
   },
   {
     icon: Globe,
     title: "Global Delivery Model",
     text: "Headquartered in Singapore with delivery teams in India, serving clients across the world.",
-    tone: "cyan",
   },
   {
     icon: Layers,
     title: "Flexible Engagement",
     text: "Project-based, dedicated teams or end-to-end delivery.",
-    tone: "gold",
   },
 ];
 
 const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(company.mapQuery)}&output=embed`;
+
+/* ── Page ────────────────────────────────────────────────────────────────── */
 
 export default function Home() {
   return (
@@ -361,189 +314,136 @@ export default function Home() {
 
       <main id="main" className="flex-1">
         {/* 1. Hero */}
-        <section id="home" className="bg-accent pt-[4.75rem]">
-          <div
-            className={cn(
-              container,
-              "grid items-center gap-12 pt-10 pb-14 sm:pt-14 lg:grid-cols-[1.18fr_0.82fr] lg:gap-14 lg:py-16",
-            )}
-          >
-            <div>
-              <Stars className="mb-5" />
-              <h1 className="font-heading text-[clamp(2.125rem,5.2vw,4rem)] leading-[1.06] font-semibold tracking-[-0.035em]">
-                Accelerate Growth.
-                <br />
-                <span className="text-primary-deep">Extend Impact.</span>
-              </h1>
-              <p className="rise mt-6 flex flex-wrap gap-x-1.5 font-heading text-base font-semibold tracking-[-0.01em] [animation-delay:80ms] sm:gap-x-2.5 sm:text-2xl">
-                <span className="text-primary-deep">Technology.</span>
-                <span className="text-brand-red-deep">People.</span>
-                <span className="text-brand-gold-deep">Creativity.</span>
-                <span>Purpose.</span>
-              </p>
-              <p className="rise mt-4 max-w-[32rem] text-lg leading-relaxed text-foreground/80 [animation-delay:160ms]">
-                We help organizations grow, operate efficiently and create
-                lasting impact — globally.
-              </p>
-              <div className="rise mt-8 flex flex-wrap gap-3 [animation-delay:240ms]">
-                <a href="#services" className={btnPrimary}>
-                  Explore Our Solutions
-                </a>
-                <a href="#contact" className={btnRed}>
-                  Contact Us
-                </a>
-              </div>
-            </div>
+        <section id="home" className="bg-secondary">
+          {/* Full-bleed photo with the headline and actions set over it. */}
+          <div className="relative flex min-h-[36rem] items-center overflow-hidden bg-primary text-white sm:min-h-[40rem] lg:min-h-[44rem]">
+            <Image
+              src={heroImage}
+              alt="A business team in a meeting around a table in a glass-walled office"
+              fill
+              preload
+              placeholder="blur"
+              sizes="100vw"
+              className="settle object-cover object-[30%_30%] lg:object-[50%_30%]"
+            />
+            {/* Navy scrims: heavy on the left under the text, and a band at the
+                top so the header stays readable. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,34,57,0.95)_0%,rgba(11,34,57,0.82)_40%,rgba(11,34,57,0.3)_100%)] max-lg:bg-primary/70"
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 h-40 bg-[linear-gradient(180deg,rgba(11,34,57,0.7),transparent)]"
+            />
 
-            <div className="relative mx-2 sm:mx-4 lg:mx-0 lg:ml-4">
-              {/* Colour blocks behind the photo, in the logo's cyan and red. */}
-              <div
-                aria-hidden="true"
-                className="absolute -top-3 -right-3 h-3/5 w-3/5 rounded-2xl bg-primary sm:-top-4 sm:-right-4"
-              />
-              <div
-                aria-hidden="true"
-                className="absolute -bottom-3 -left-3 h-2/5 w-2/5 rounded-2xl bg-brand-red sm:-bottom-4 sm:-left-4"
-              />
-              <div
-                aria-hidden="true"
-                className="absolute -right-4 bottom-5 z-20 flex w-16 flex-col gap-1.5 sm:-right-8 sm:bottom-10 sm:w-32 sm:gap-2"
-              >
-                <span className="stripe h-2.5 bg-brand-gold [animation-delay:300ms]" />
-                <span className="stripe h-2.5 bg-brand-red [animation-delay:420ms]" />
-                <span className="stripe h-2.5 bg-primary [animation-delay:540ms]" />
-              </div>
-              <div className="relative z-10 aspect-[4/3] overflow-hidden rounded-2xl shadow-[0_24px_48px_-24px_rgba(14,39,49,0.45)] sm:aspect-[16/10] lg:aspect-[6/7]">
-                <Image
-                  src={heroImage}
-                  alt="A consulting team in discussion around a table in a bright office"
-                  fill
-                  preload
-                  placeholder="blur"
-                  sizes="(min-width: 1024px) 520px, 100vw"
-                  className="object-cover object-[62%_55%]"
-                />
+            <div className={cn(container, "relative pt-28 pb-14 lg:pt-32 lg:pb-16")}>
+              <div className="max-w-3xl">
+                <p className="rise flex flex-wrap gap-x-2.5 gap-y-1 text-[0.8125rem] font-semibold tracking-[0.14em] text-brand-cyan uppercase">
+                  <span>Technology.</span>
+                  <span>People.</span>
+                  <span>Creativity.</span>
+                  <span>Purpose.</span>
+                </p>
+                <h1 className="rise mt-7 font-heading text-[clamp(2.125rem,4.6vw,4rem)] leading-[1.04] font-semibold tracking-[-0.035em] [animation-delay:80ms]">
+                  Accelerate Growth.
+                  <br />
+                  <span className="text-brand-cyan">Extend Impact.</span>
+                </h1>
+                <p className="rise mt-6 max-w-[34rem] text-lg leading-relaxed text-white/85 [animation-delay:160ms]">
+                  We help organizations grow, operate efficiently and create
+                  lasting impact — globally.
+                </p>
+                <div className="rise mt-10 flex flex-wrap gap-3 [animation-delay:240ms]">
+                  <a href="#services" className={btnOnDark}>
+                    Explore Our Solutions
+                    <ArrowRight className={btnArrow} aria-hidden="true" />
+                  </a>
+                  <a href="#contact" className={btnOutlineOnDark}>
+                    Contact Us
+                  </a>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Four fact cards that straddle the hero and the next section. */}
-          <div className="bg-[linear-gradient(to_bottom,transparent_50%,var(--background)_50%)]">
-            <div
-              className={cn(
-                container,
-                "grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4",
-              )}
-            >
+          {/* Four facts, set as a quiet ruled row under the hero. */}
+          <div className={cn(container, "py-16 lg:py-20")}>
+            <ul className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
               {heroFacts.map((fact, i) => (
-                <Reveal key={fact.title} delay={i * 80} className="h-full">
-                  <div
-                    className={cn(
-                      "group relative h-full overflow-hidden rounded-2xl border border-t-4 bg-white p-5 shadow-[0_16px_36px_-20px_rgba(6,127,163,0.5)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_22px_44px_-18px_rgba(6,127,163,0.55)]",
-                      tones[fact.tone].bar,
-                    )}
+                <li key={fact.title}>
+                  <Reveal
+                    delay={i * 80}
+                    className="border-t border-foreground/15 pt-6"
                   >
-                    {/* Oversized ghost icon, top right, clear of the tags. */}
                     <fact.icon
+                      className="size-6 text-primary-deep"
+                      strokeWidth={1.5}
                       aria-hidden="true"
-                      strokeWidth={1.25}
-                      className={cn(
-                        "absolute -top-5 -right-5 size-24 opacity-[0.07] transition-transform duration-300 group-hover:scale-110",
-                        tones[fact.tone].text,
-                      )}
                     />
-                    <div className="relative flex items-center gap-3.5">
-                      <span
-                        className={cn(
-                          "flex size-12 shrink-0 items-center justify-center rounded-xl",
-                          tones[fact.tone].tile,
-                        )}
-                      >
-                        <fact.icon className="size-6" aria-hidden="true" />
-                      </span>
-                      <h2 className="font-heading text-lg leading-tight font-semibold tracking-[-0.015em]">
-                        {fact.title}
-                      </h2>
-                    </div>
-                    <p className="relative mt-4 flex flex-wrap gap-1.5">
-                      {fact.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className={cn(
-                            "rounded-full px-2.5 py-1 text-[0.8125rem] leading-tight font-medium",
-                            tones[fact.tone].tint,
-                            tones[fact.tone].text,
-                          )}
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                    <h2 className="mt-5 font-heading text-lg leading-tight font-semibold tracking-[-0.02em]">
+                      {fact.title}
+                    </h2>
+                    <p className="mt-2 text-[0.95rem] leading-relaxed text-muted-foreground">
+                      {fact.tags.join(" · ")}
                     </p>
-                  </div>
-                </Reveal>
+                  </Reveal>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </section>
 
         {/* 2. Our Solutions */}
-        <section id="services" className={cn(section, "pt-16 lg:pt-20")}>
+        <section id="services" className={section}>
           <div className={container}>
-            <Reveal className="grid gap-6 lg:grid-cols-2 lg:gap-16">
-              <div>
-                <p className={kicker}>Our Solutions</p>
-                <h2 className={cn(h2, "mt-3")}>
+            <Reveal className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-10">
+              <div className="lg:col-span-7">
+                <Eyebrow>Our Solutions</Eyebrow>
+                <h2 className={cn(h2, "mt-6")}>
                   One Partner. Multiple Ways to Grow.
                 </h2>
               </div>
-              <p className={cn(lead, "lg:pt-9")}>
+              <p className={cn(lead, "lg:col-span-5")}>
                 From digital growth to people solutions, from software to
                 branded merchandise — we bring the right mix of technology,
                 talent and creativity to help you move forward.
               </p>
             </Reveal>
 
-            <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-16 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
               {solutions.map((item, i) => (
                 <Reveal key={item.title} delay={i * 80} className="h-full">
-                  <a
-                    href={item.href}
-                    className={cn(
-                      "group flex h-full flex-col overflow-hidden rounded-xl border transition-transform duration-200 hover:-translate-y-1",
-                      tones[item.tone].tint,
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        "relative aspect-[3/2] overflow-hidden border-b-[5px]",
-                        tones[item.tone].line,
-                      )}
-                    >
+                  <a href={item.href} className="group flex h-full flex-col">
+                    <div className={cn(frame, "aspect-[4/3] lg:aspect-[5/6]")}>
                       <Image
                         src={item.image}
                         alt={item.alt}
                         fill
                         placeholder="blur"
-                        sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(min-width: 1024px) 310px, (min-width: 640px) 50vw, 100vw"
+                        className={zoom}
                       />
                     </div>
-                    <div className="flex flex-1 flex-col p-6">
-                      <h3 className="font-heading text-xl leading-snug font-semibold tracking-[-0.015em]">
-                        {item.title}
-                      </h3>
-                      <p className="mt-3 text-[0.975rem] text-foreground/75">
-                        {item.text}
-                      </p>
-                      <span
-                        className={cn(
-                          "mt-auto pt-6 text-sm font-semibold underline-offset-4 group-hover:underline",
-                          tones[item.tone].text,
-                        )}
-                      >
-                        View details
+                    <div className="mt-6 flex items-start justify-between gap-4">
+                      <span className={cn(index, "pt-1 text-primary-deep")}>
+                        {two(i)}
                       </span>
+                      <ArrowUpRight
+                        className="size-5 text-foreground/30 transition-[color,transform] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary-deep"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
                     </div>
+                    <h3 className="mt-3 font-heading text-xl leading-snug font-semibold tracking-[-0.025em]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2.5 text-[0.975rem] leading-relaxed text-muted-foreground">
+                      {item.text}
+                    </p>
+                    <span className="mt-auto pt-6 text-sm font-semibold">
+                      <span className="link-line pb-0.5">View details</span>
+                    </span>
                   </a>
                 </Reveal>
               ))}
@@ -552,51 +452,43 @@ export default function Home() {
         </section>
 
         {/* 3. Digital Growth */}
-        <section id="digital-growth" className={cn(section, "bg-accent")}>
+        <section id="digital-growth" className={cn(section, "bg-secondary")}>
           <div className={container}>
-            <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-              <Reveal>
-                <div className="relative">
-                  <div
-                    aria-hidden="true"
-                    className="absolute -bottom-4 -left-3 h-1/2 w-1/2 rounded-xl bg-primary sm:-left-4"
+            <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+              <Reveal className="lg:col-span-6">
+                <div className={cn(frame, "aspect-[4/3] bg-border")}>
+                  <Image
+                    src={digitalImage}
+                    alt="A marketer reviewing campaign analytics on a monitor and a social feed on a phone"
+                    fill
+                    placeholder="blur"
+                    sizes="(min-width: 1024px) 640px, 100vw"
+                    className="object-cover"
                   />
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
-                    <Image
-                      src={digitalImage}
-                      alt="A marketer reviewing campaign analytics on a monitor and a social feed on a phone"
-                      fill
-                      placeholder="blur"
-                      sizes="(min-width: 1024px) 620px, 100vw"
-                      className="object-cover"
-                    />
-                  </div>
                 </div>
               </Reveal>
 
-              <Reveal delay={100}>
-                <p className={kicker}>Digital Growth</p>
-                <h2 className={cn(h2, "mt-3")}>
+              <Reveal delay={100} className="lg:col-span-5 lg:col-start-8">
+                <Eyebrow>Digital Growth</Eyebrow>
+                <h2 className={cn(h2, "mt-6")}>
                   From Visibility to Real Results.
                 </h2>
-                <p className="mt-5 text-lg leading-relaxed text-foreground/80">
+                <p className={cn(lead, "mt-6")}>
                   We create data-driven digital strategies that help
                   organizations build their brand, reach the right audience and
                   achieve measurable growth.
                 </p>
-                <ul className="mt-8 grid gap-x-8 gap-y-3.5 sm:grid-cols-2">
+                <ul className="mt-10 border-b border-foreground/12">
                   {digitalServices.map((service) => (
                     <li
                       key={service}
-                      className="flex gap-3 text-[0.975rem] leading-snug font-medium"
+                      className="flex items-center gap-4 border-t border-foreground/12 py-3.5 text-[0.975rem] leading-snug font-medium"
                     >
-                      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                        <Check
-                          className="size-3.5"
-                          strokeWidth={3}
-                          aria-hidden="true"
-                        />
-                      </span>
+                      <Check
+                        className="size-4 shrink-0 text-primary-deep"
+                        strokeWidth={2}
+                        aria-hidden="true"
+                      />
                       {service}
                     </li>
                   ))}
@@ -605,29 +497,22 @@ export default function Home() {
             </div>
 
             {/* A real sequence, so it is numbered. */}
-            <Reveal className="mt-16 lg:mt-20">
-              <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Reveal className="mt-20 lg:mt-28">
+              <ol className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
                 {digitalSteps.map((step, i) => {
                   const last = i === digitalSteps.length - 1;
                   return (
                     <li
                       key={step}
                       className={cn(
-                        "flex items-center gap-4 rounded-xl border-2 bg-white p-5 text-foreground",
-                        last ? "border-brand-red" : "border-transparent",
+                        "border-t-2 pt-6",
+                        last ? "border-brand-cyan" : "border-foreground/15",
                       )}
                     >
-                      <span
-                        className={cn(
-                          "flex size-11 shrink-0 items-center justify-center rounded-full font-heading font-semibold",
-                          last
-                            ? "bg-brand-red-deep text-white"
-                            : "bg-primary text-primary-foreground",
-                        )}
-                      >
-                        {i + 1}
+                      <span className={cn(index, "text-primary-deep")}>
+                        {two(i)}
                       </span>
-                      <span className="font-heading text-xl font-semibold tracking-[-0.015em]">
+                      <span className="mt-3 block font-heading text-xl font-semibold tracking-[-0.025em] lg:text-2xl">
                         {step}
                       </span>
                     </li>
@@ -638,128 +523,57 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 4. BPO & Staffing */}
-        <section
-          id="bpo-staffing"
-          className={cn(section, "bg-deep text-white")}
-        >
+        {/* 4. BPO, Staffing & Training: one service at a time, by tab */}
+        <section id="bpo-staffing" className={section}>
           <div className={container}>
-            <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-              <Reveal>
-                <p className="font-heading font-semibold text-primary">
-                  BPO, Staffing & Training
-                </p>
-                <h2 className={cn(h2, "mt-3")}>
-                  People and processes to keep you moving.
-                </h2>
-                <div
-                  aria-hidden="true"
-                  className="mt-8 flex w-28 flex-col gap-2"
-                >
-                  <span className="h-2 bg-primary" />
-                  <span className="h-2 bg-brand-red" />
-                  <span className="h-2 bg-brand-gold" />
-                </div>
-              </Reveal>
-              <Reveal delay={100}>
-                <div className="relative aspect-[16/9] overflow-hidden rounded-xl">
-                  <Image
-                    src={peopleImage}
-                    alt="Customer support professionals wearing headsets at their desks"
-                    fill
-                    placeholder="blur"
-                    sizes="(min-width: 1024px) 600px, 100vw"
-                    className="object-cover object-[50%_30%]"
-                  />
-                </div>
-              </Reveal>
-            </div>
+            <Reveal className="max-w-3xl">
+              <Eyebrow>BPO, Staffing & Training</Eyebrow>
+              <h2 className={cn(h2, "mt-6")}>
+                People and processes to keep you moving.
+              </h2>
+            </Reveal>
 
-            <div className="mt-12 grid gap-5 lg:grid-cols-3">
-              {peopleGroups.map((group, i) => (
-                <Reveal key={group.title} delay={i * 80} className="h-full">
-                  <article
-                    className={cn(
-                      "h-full rounded-xl border-t-[6px] bg-white p-7 text-foreground lg:p-8",
-                      tones[group.tone].bar,
-                    )}
-                  >
-                    <h3
-                      className={cn(
-                        "font-heading text-2xl font-semibold tracking-[-0.02em]",
-                        tones[group.tone].text,
-                      )}
-                    >
-                      {group.title}
-                    </h3>
-                    <p className="mt-2 text-[0.975rem] text-muted-foreground">
-                      {group.subtitle}
-                    </p>
-                    <ul className="mt-6 space-y-3.5 border-t pt-6">
-                      {group.items.map((item) => (
-                        <li
-                          key={item}
-                          className="flex gap-3 text-[0.975rem] leading-snug"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className={cn(
-                              "mt-[0.4rem] size-2 shrink-0 rounded-full",
-                              tones[group.tone].tile,
-                            )}
-                          />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </article>
-                </Reveal>
-              ))}
-            </div>
+            <Reveal delay={100} className="mt-12 lg:mt-16">
+              <ServiceTabs groups={peopleGroups} />
+            </Reveal>
           </div>
         </section>
 
         {/* 5. Software Solutions */}
-        <section id="products" className={section}>
+        <section id="products" className={cn(section, "bg-secondary")}>
           <div
             className={cn(
               container,
-              "grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16",
+              "grid items-center gap-14 lg:grid-cols-12 lg:gap-10",
             )}
           >
-            <Reveal>
-              <p className={kicker}>Software Solutions</p>
-              <h2 className={cn(h2, "mt-3")}>
+            <Reveal className="lg:col-span-6">
+              <Eyebrow>Software Solutions</Eyebrow>
+              <h2 className={cn(h2, "mt-6")}>
                 Technology that simplifies, connects and scales.
               </h2>
-              <p className={cn(lead, "mt-5")}>
+              <p className={cn(lead, "mt-6 max-w-xl")}>
                 We develop and implement practical software solutions to help
                 organizations manage operations, people and growth efficiently.
               </p>
-              <ul className="mt-8 space-y-3">
+              <ul className="mt-10 border-b border-foreground/12">
                 {software.map((item) => (
                   <li
                     key={item.name}
-                    className={cn(
-                      "flex items-center gap-4 rounded-2xl p-3 pr-5 transition-transform duration-200 hover:translate-x-1.5 sm:gap-5",
-                      tones[item.tone].tint,
-                    )}
+                    className="group grid grid-cols-[4.5rem_1fr] items-baseline gap-5 border-t border-foreground/12 py-6 sm:grid-cols-[6.5rem_1fr] sm:gap-8"
                   >
                     <span
                       aria-hidden="true"
-                      className={cn(
-                        "flex size-16 shrink-0 items-center justify-center rounded-xl font-heading text-xl font-semibold tracking-[-0.02em]",
-                        tones[item.tone].tile,
-                      )}
+                      className="font-heading text-2xl leading-none font-semibold tracking-[-0.035em] text-foreground/25 transition-colors duration-300 group-hover:text-primary-deep sm:text-[1.875rem]"
                     >
                       {item.name}
                     </span>
                     <div>
-                      <h3 className="font-heading text-lg leading-snug font-semibold tracking-[-0.01em]">
+                      <h3 className="font-heading text-lg leading-snug font-semibold tracking-[-0.02em]">
                         <span className="sr-only">{item.name}: </span>
                         {item.full}
                       </h3>
-                      <p className="mt-0.5 text-[0.95rem] leading-snug text-foreground/75">
+                      <p className="mt-1 text-[0.975rem] leading-relaxed text-muted-foreground">
                         {item.text}
                       </p>
                     </div>
@@ -768,75 +582,56 @@ export default function Home() {
               </ul>
               <a
                 href="#contact"
-                className={cn(btnPrimary, "mt-9")}
+                className={cn(btnPrimary, "mt-10")}
                 aria-label="Learn more about software solutions"
               >
                 Learn More
+                <ArrowRight className={btnArrow} aria-hidden="true" />
               </a>
             </Reveal>
 
-            <Reveal delay={100}>
-              <div className="relative mx-2 sm:mx-4 lg:mx-0">
-                <div
-                  aria-hidden="true"
-                  className="absolute -top-3 -right-3 h-3/5 w-3/5 rounded-2xl bg-brand-red sm:-top-4 sm:-right-4"
+            <Reveal delay={100} className="lg:col-span-5 lg:col-start-8">
+              <div className={cn(frame, "aspect-[4/3] lg:aspect-[5/6]")}>
+                <Image
+                  src={softwareImage}
+                  alt="A laptop and monitor showing a business dashboard with tables and charts"
+                  fill
+                  placeholder="blur"
+                  sizes="(min-width: 1024px) 540px, 100vw"
+                  className="object-cover object-[60%_50%]"
                 />
-                <div
-                  aria-hidden="true"
-                  className="absolute -bottom-3 -left-3 h-2/5 w-2/5 rounded-2xl bg-primary sm:-bottom-4 sm:-left-4"
-                />
-                <div
-                  aria-hidden="true"
-                  className="absolute -left-4 top-8 z-20 flex w-16 flex-col gap-1.5 sm:-left-8 sm:top-10 sm:w-28 sm:gap-2"
-                >
-                  <span className="h-2.5 bg-brand-gold" />
-                  <span className="h-2.5 bg-brand-red" />
-                  <span className="h-2.5 bg-primary" />
-                </div>
-                <div className="relative z-10 aspect-[4/3] overflow-hidden rounded-2xl shadow-[0_24px_48px_-24px_rgba(14,39,49,0.45)] lg:aspect-[10/9]">
-                  <Image
-                    src={softwareImage}
-                    alt="A laptop and monitor showing a business dashboard with tables and charts"
-                    fill
-                    placeholder="blur"
-                    sizes="(min-width: 1024px) 580px, 100vw"
-                    className="object-cover object-[60%_50%]"
-                  />
-                </div>
               </div>
             </Reveal>
           </div>
         </section>
 
         {/* 6. Merchandise */}
-        <section id="merchandise" className={cn(section, "bg-gold-tint")}>
+        <section id="merchandise" className={section}>
           <div
             className={cn(
               container,
-              "grid items-center gap-12 lg:grid-cols-2 lg:gap-16",
+              "grid items-center gap-14 lg:grid-cols-12 lg:gap-10",
             )}
           >
-            <Reveal className="lg:order-2">
-              <p className="font-heading font-semibold text-brand-gold-deep">
-                Merchandise
-              </p>
-              <h2 className={cn(h2, "mt-3")}>
+            <Reveal className="lg:order-2 lg:col-span-5 lg:col-start-8">
+              <Eyebrow>Merchandise</Eyebrow>
+              <h2 className={cn(h2, "mt-6")}>
                 Branded products that make an impact.
               </h2>
-              <p className="mt-5 text-lg leading-relaxed text-foreground/80">
+              <p className={cn(lead, "mt-6")}>
                 High-quality, customized merchandise for organizations, events,
                 ministries, conferences and corporate needs.
               </p>
-              <dl className="mt-8 space-y-5">
+              <dl className="mt-10 border-b border-foreground/12">
                 {merchandise.map((item) => (
                   <div
                     key={item.name}
-                    className={cn("border-l-4 pl-5", tones[item.tone].line)}
+                    className="grid gap-1 border-t border-foreground/12 py-5 sm:grid-cols-[9rem_1fr] sm:gap-6"
                   >
-                    <dt className="font-heading text-lg font-semibold tracking-[-0.01em]">
+                    <dt className="font-heading text-lg font-semibold tracking-[-0.02em]">
                       {item.name}
                     </dt>
-                    <dd className="mt-0.5 text-[0.975rem] text-foreground/75">
+                    <dd className="text-[0.975rem] leading-relaxed text-muted-foreground">
                       {item.text}
                     </dd>
                   </div>
@@ -844,120 +639,122 @@ export default function Home() {
               </dl>
               <a
                 href="#contact"
-                className={cn(btnRed, "mt-9")}
+                className={cn(btnPrimary, "mt-10")}
                 aria-label="Learn more about merchandise"
               >
                 Learn More
+                <ArrowRight className={btnArrow} aria-hidden="true" />
               </a>
             </Reveal>
 
-            <Reveal delay={100} className="lg:order-1">
-              <div className="relative">
-                <div
-                  aria-hidden="true"
-                  className="absolute -bottom-4 -left-3 h-1/2 w-1/2 rounded-xl bg-brand-gold sm:-left-4"
+            <Reveal delay={100} className="lg:order-1 lg:col-span-6">
+              <div className={cn(frame, "aspect-[3/2] bg-border")}>
+                <Image
+                  src={merchandiseImage}
+                  alt="T-shirts, a cap, a tote bag, a steel bottle, a lanyard and a gift box laid out flat"
+                  fill
+                  placeholder="blur"
+                  sizes="(min-width: 1024px) 640px, 100vw"
+                  className="object-cover"
                 />
-                <div className="relative aspect-[3/2] overflow-hidden rounded-xl">
-                  <Image
-                    src={merchandiseImage}
-                    alt="T-shirts, a cap, a tote bag, a steel bottle, a lanyard and a gift box laid out flat"
-                    fill
-                    placeholder="blur"
-                    sizes="(min-width: 1024px) 620px, 100vw"
-                    className="object-cover"
-                  />
-                </div>
               </div>
             </Reveal>
           </div>
         </section>
 
         {/* 7. Our Clients */}
-        <section id="clients" className={section}>
+        <section id="clients" className={cn(section, "bg-secondary")}>
           <div className={container}>
             <Reveal>
-              <p className={kicker}>Our Clients</p>
-              <h2 className={cn(h2, "mt-3 max-w-2xl")}>
+              <Eyebrow>Our Clients</Eyebrow>
+              <h2 className={cn(h2, "mt-6 max-w-3xl")}>
                 Trusted by organizations across industries.
               </h2>
             </Reveal>
-            <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:mt-12">
-              {clients.map((client, i) => (
-                <li key={client.name}>
-                  <Reveal delay={(i % 3) * 80} className="h-full">
-                    <figure
-                      className={cn(
-                        "group relative h-full overflow-hidden rounded-2xl border-b-[5px] shadow-[0_18px_36px_-24px_rgba(14,39,49,0.5)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_24px_44px_-22px_rgba(14,39,49,0.55)]",
-                        tones[client.tone].line,
-                      )}
-                    >
-                      <div className="relative aspect-[4/3] sm:aspect-[3/2]">
-                        <Image
-                          src={client.image}
-                          alt={client.alt}
-                          fill
-                          placeholder="blur"
-                          sizes="(min-width: 1280px) 400px, (min-width: 768px) 33vw, 50vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </div>
-                      {/* Name tag sits on the photo, bottom left. */}
-                      <figcaption className="absolute bottom-2.5 left-2.5 flex max-w-[calc(100%-1.25rem)] items-center gap-2 rounded-lg bg-white py-1.5 pr-3 pl-2 font-heading text-sm leading-tight font-semibold tracking-[-0.01em] text-foreground shadow-[0_6px_16px_-6px_rgba(14,39,49,0.45)] sm:bottom-4 sm:left-4 sm:gap-2.5 sm:py-2 sm:pr-4 sm:pl-2.5 sm:text-base">
-                        <span
-                          aria-hidden="true"
-                          className={cn(
-                            "size-3 shrink-0 rounded-[4px] sm:size-3.5",
-                            tones[client.tone].tile,
-                          )}
-                        />
-                        {client.name}
-                      </figcaption>
-                    </figure>
-                  </Reveal>
-                </li>
-              ))}
-            </ul>
           </div>
+
+          {/* Auto-scrolling carousel. The list is rendered twice so the loop is
+              seamless; the second copy is hidden from assistive tech. It pauses
+              on hover and focus, and becomes a plain swipeable row for people
+              who prefer reduced motion (see .marquee in globals.css). */}
+          <Reveal className="marquee mt-14 lg:mt-20">
+            <div className="marquee-track">
+              {[0, 1].map((copy) => (
+                <ul
+                  key={copy}
+                  aria-hidden={copy === 1 ? true : undefined}
+                  className={cn(
+                    "flex shrink-0 gap-5 pr-5 sm:gap-6 sm:pr-6",
+                    copy === 1 && "marquee-copy",
+                  )}
+                >
+                  {clients.map((client, i) => (
+                    <li
+                      key={client.name}
+                      className="w-[16.5rem] shrink-0 sm:w-[22rem] lg:w-[26rem]"
+                    >
+                      <figure className="group">
+                        <div className={cn(frame, "aspect-[4/3]")}>
+                          <Image
+                            src={client.image}
+                            alt={copy === 0 ? client.alt : ""}
+                            fill
+                            placeholder="blur"
+                            sizes="(min-width: 1024px) 416px, (min-width: 640px) 352px, 264px"
+                            className={zoom}
+                          />
+                        </div>
+                        <figcaption className="mt-4 flex items-baseline justify-between gap-3 border-t border-foreground/15 pt-4">
+                          <span className="font-heading text-base leading-snug font-semibold tracking-[-0.02em] sm:text-xl">
+                            {client.name}
+                          </span>
+                          <span
+                            aria-hidden="true"
+                            className={cn(index, "text-foreground/35")}
+                          >
+                            {two(i)}
+                          </span>
+                        </figcaption>
+                      </figure>
+                    </li>
+                  ))}
+                </ul>
+              ))}
+            </div>
+          </Reveal>
         </section>
 
         {/* 8. Why Telo */}
-        <section id="why" className={cn(section, "bg-accent")}>
+        <section id="why" className={section}>
           <div
-            className={cn(
-              container,
-              "grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16",
-            )}
+            className={cn(container, "grid gap-14 lg:grid-cols-12 lg:gap-10")}
           >
-            <Reveal className="lg:sticky lg:top-28 lg:self-start">
-              <p className={kicker}>Why Telo Management Consulting</p>
-              <h2 className={cn(h2, "mt-3")}>
+            <Reveal className="lg:sticky lg:top-32 lg:col-span-5 lg:self-start">
+              <Eyebrow>Why Telo Management Consulting</Eyebrow>
+              <h2 className={cn(h2, "mt-6")}>
                 Global capability.
                 <br />
                 <span className="text-primary-deep">Real value.</span>
               </h2>
-              <Stars className="mt-8" />
             </Reveal>
 
-            <ul className="space-y-4">
+            <ul className="border-b border-foreground/12 lg:col-span-6 lg:col-start-7">
               {reasons.map((reason, i) => (
                 <li key={reason.title}>
                   <Reveal
                     delay={i * 60}
-                    className="flex gap-5 rounded-xl bg-white p-6"
+                    className="grid grid-cols-[auto_1fr] gap-x-6 border-t border-foreground/12 py-7 sm:gap-x-8 sm:py-8"
                   >
-                    <span
-                      className={cn(
-                        "flex size-12 shrink-0 items-center justify-center rounded-lg",
-                        tones[reason.tone].tile,
-                      )}
-                    >
-                      <reason.icon className="size-6" aria-hidden="true" />
-                    </span>
+                    <reason.icon
+                      className="mt-0.5 size-7 text-primary-deep"
+                      strokeWidth={1.25}
+                      aria-hidden="true"
+                    />
                     <div>
-                      <h3 className="font-heading text-xl font-semibold tracking-[-0.015em]">
+                      <h3 className="font-heading text-xl font-semibold tracking-[-0.025em] sm:text-[1.375rem]">
                         {reason.title}
                       </h3>
-                      <p className="mt-1 max-w-xl text-muted-foreground">
+                      <p className="mt-1.5 max-w-xl text-muted-foreground">
                         {reason.text}
                       </p>
                     </div>
@@ -969,65 +766,62 @@ export default function Home() {
         </section>
 
         {/* 9. Let's Create What's Next */}
-        <section className="relative overflow-hidden bg-primary py-20 text-primary-foreground lg:py-28">
+        <section className="relative overflow-hidden bg-primary py-20 text-white lg:py-28">
+          {/* Background photo, pushed back under navy so the text stays readable. */}
+          <Image
+            src={softwareImage}
+            alt=""
+            fill
+            placeholder="blur"
+            sizes="100vw"
+            className="object-cover object-[50%_45%]"
+          />
           <div
             aria-hidden="true"
-            className="absolute top-0 right-0 hidden h-full w-56 flex-col justify-center gap-5 lg:flex"
-          >
-            <span className="h-7 bg-white/25" />
-            <span className="h-7 bg-white/25" />
-            <span className="h-7 bg-white/25" />
-          </div>
+            className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,34,57,0.97)_0%,rgba(11,34,57,0.93)_50%,rgba(11,34,57,0.74)_100%)]"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[radial-gradient(60%_90%_at_100%_0%,rgba(3,179,228,0.18),transparent_70%)]"
+          />
+          {/* One left-aligned stack: label, statement, action. */}
           <Reveal className={cn(container, "relative")}>
-            <Stars className="mb-6 text-white" />
-            <h2 className="font-heading text-xl font-semibold">
-              Let’s Create What’s Next
-            </h2>
-            <p className="mt-5 max-w-3xl font-heading text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.1] font-semibold tracking-[-0.03em]">
-              Business growth. More opportunities. A wider impact.
-            </p>
-            <a href="#contact" className={cn(btnRed, "mt-10")}>
-              Get in Touch
-            </a>
+            <div className="max-w-5xl">
+              <h2 className="flex items-center gap-3 text-[0.8125rem] font-semibold tracking-[0.14em] text-brand-cyan uppercase">
+                <span aria-hidden="true" className="h-px w-8 bg-current" />
+                Let’s Create What’s Next
+              </h2>
+              <p className="mt-7 font-heading text-[clamp(1.875rem,3.6vw,3rem)] leading-[1.1] font-semibold tracking-[-0.03em]">
+                {/* One line where it fits; on narrow screens it breaks between
+                    the two sentences, never inside one. */}
+                <span className="block">
+                  <span className="inline-block">Business growth.</span>{" "}
+                  <span className="inline-block">More opportunities.</span>
+                </span>
+                <span className="block">A wider impact.</span>
+              </p>
+              <a href="#contact" className={cn(btnOnDark, "mt-10 lg:mt-12")}>
+                Get in Touch
+                <ArrowRight className={btnArrow} aria-hidden="true" />
+              </a>
+            </div>
           </Reveal>
         </section>
 
-        {/* 10. Map with address */}
+        {/* 10. Contact: full-width map (the address lives in the footer) */}
         <section id="contact" className={section}>
-          <div
-            className={cn(
-              container,
-              "grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16",
-            )}
-          >
-            <Reveal>
-              <p className={kicker}>Contact</p>
-              <h2 className={cn(h2, "mt-3")}>Visit our office</h2>
-              <address className="mt-8 flex gap-4 rounded-xl bg-accent p-6 text-lg leading-relaxed not-italic">
-                <span className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-brand-red text-white">
-                  <MapPin className="size-6" aria-hidden="true" />
-                </span>
-                <span>
-                  <span className="block font-semibold">
-                    {company.legalName}
-                  </span>
-                  {company.addressLines.map((line) => (
-                    <span key={line} className="block text-foreground/75">
-                      {line}
-                    </span>
-                  ))}
-                </span>
-              </address>
-            </Reveal>
+          <div className={container}>
+            {/* No visible heading; this one names the section for screen readers. */}
+            <h2 className="sr-only">Contact</h2>
 
-            <Reveal delay={100}>
-              <div className="overflow-hidden rounded-xl bg-secondary">
+            <Reveal>
+              <div className={cn(frame, "border")}>
                 <iframe
                   src={mapSrc}
                   title="Map showing the Telo Management Consultant office in Old Washermenpet, Chennai"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="block h-[22rem] w-full lg:h-[26rem]"
+                  className="block h-[24rem] w-full lg:h-[32rem]"
                 />
               </div>
             </Reveal>

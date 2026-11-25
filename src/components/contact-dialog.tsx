@@ -48,7 +48,7 @@ export function ContactButton({
       }}
       className={cn(
         buttonVariants(),
-        "bg-brand-red-deep font-semibold text-white hover:bg-brand-red",
+        "font-semibold hover:bg-primary-deep",
         className,
       )}
     >
@@ -264,13 +264,9 @@ export function ContactDialog() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] gap-0 overflow-y-auto p-0 text-base sm:max-w-xl">
-        <div aria-hidden="true" className="flex h-1.5">
-          <span className="flex-[3] bg-primary" />
-          <span className="flex-[2] bg-brand-red" />
-          <span className="flex-1 bg-brand-gold" />
-        </div>
-        <DialogHeader className="bg-accent px-6 py-6 pr-14 sm:px-8">
-          <DialogTitle className="text-2xl leading-tight font-semibold tracking-[-0.02em]">
+        <div aria-hidden="true" className="h-0.5 bg-brand-cyan" />
+        <DialogHeader className="border-b px-6 py-6 pr-14 sm:px-8">
+          <DialogTitle className="font-heading text-2xl leading-tight font-semibold tracking-[-0.025em]">
             Get in touch
           </DialogTitle>
           <DialogDescription className="text-base text-foreground/75">

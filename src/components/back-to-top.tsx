@@ -25,13 +25,13 @@ export function BackToTop() {
       tabIndex={visible ? 0 : -1}
       aria-hidden={!visible}
       className={cn(
-        "fixed right-4 bottom-4 z-30 flex size-12 items-center justify-center rounded-full bg-brand-red-deep text-white shadow-[0_10px_24px_-8px_rgba(14,39,49,0.55)] transition-[opacity,transform,background-color] duration-300 hover:bg-brand-red sm:right-6 sm:bottom-6",
+        "fixed right-4 bottom-4 z-30 flex size-12 items-center justify-center rounded-full border border-white/15 bg-primary text-white shadow-[0_12px_28px_-12px_rgba(11,34,57,0.6)] transition-[opacity,transform,background-color,color] duration-300 hover:bg-brand-cyan hover:text-primary sm:right-6 sm:bottom-6",
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-4 opacity-0",
       )}
     >
-      <ArrowUp className="size-5" strokeWidth={2.5} aria-hidden="true" />
+      <ArrowUp className="size-5" strokeWidth={1.75} aria-hidden="true" />
     </button>
   );
 }
