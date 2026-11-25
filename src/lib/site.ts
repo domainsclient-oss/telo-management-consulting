@@ -37,4 +37,5 @@ export const company = {
     "Chennai-21.",
   ],
   mapQuery: "YMCA Royapuram, G.A Road, Old Washermenpet, Chennai 600021",
+  email: "support@telomanagementconsulting.in",
 } as const;

@@ -108,6 +108,12 @@ export function SiteFooter() {
                   {line}
                 </span>
               ))}
+              <a
+                href={`mailto:${company.email}`}
+                className="link-line mt-4 inline-block py-0.5 break-all text-white transition-colors duration-300 hover:text-brand-cyan"
+              >
+                {company.email}
+              </a>
             </address>
           </div>
         </div>
